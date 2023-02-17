@@ -2,12 +2,12 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {EMPTY, Observable} from "rxjs";
 
 @Component({
-  selector: 'urb-leak-list',
-  templateUrl: './leak-list.component.html',
-  styleUrls: ['./leak-list.component.css'],
+  selector: 'urb-rent-debt',
+  templateUrl: './rent-debt.component.html',
+  styleUrls: ['./rent-debt.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LeakListComponent {
+export class RentDebtComponent {
   @Input()
-  public leaks: Observable<any> = EMPTY
+  public debt: Observable<any> = EMPTY
 }
