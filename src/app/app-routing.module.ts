@@ -1,7 +1,6 @@
-import { NgModule } from "@angular/core"
-import { RouterModule, Routes } from "@angular/router"
-import { AnalyticsPageComponent } from "./pages/analytics-page/analytics-page.component"
-import { HomePageComponent } from "./pages/home-page/home-page.component"
+import {NgModule} from "@angular/core"
+import {RouterModule, Routes} from "@angular/router"
+import {HomePageComponent} from "./pages/home-page/home-page.component"
 
 const routes: Routes = [
   {
@@ -10,7 +9,7 @@ const routes: Routes = [
   },
   {
     path: "analytics",
-    component: AnalyticsPageComponent
+    loadChildren: () => import('./pages/analytics-page/analytics.module').then((module) => module.AnalyticsModule)
   }
 ]
 

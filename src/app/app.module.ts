@@ -6,14 +6,13 @@ import { NgDompurifySanitizer } from "@tinkoff/ng-dompurify"
 
 import { AppRoutingModule } from "./app-routing.module"
 import { AppComponent } from "./app.component"
-import { AnalyticsPageComponent } from "./pages/analytics-page/analytics-page.component"
 import { HomePageComponent } from "./pages/home-page/home-page.component"
+import {AnalyticsModule} from "./pages/analytics-page/analytics.module";
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomePageComponent,
-    AnalyticsPageComponent
+    HomePageComponent
   ],
   imports: [
     BrowserModule,
@@ -21,7 +20,8 @@ import { HomePageComponent } from "./pages/home-page/home-page.component"
     BrowserAnimationsModule,
     TuiRootModule,
     TuiDialogModule,
-    TuiAlertModule
+    TuiAlertModule,
+    AnalyticsModule
   ],
   providers: [ { provide: TUI_SANITIZER, useClass: NgDompurifySanitizer } ],
   bootstrap: [ AppComponent ]
