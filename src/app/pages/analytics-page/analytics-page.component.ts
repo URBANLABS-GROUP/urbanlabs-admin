@@ -13,4 +13,5 @@ export class AnalyticsPageComponent {
 
   public leaks = this.analyticsService.loadLeaks()
   public debt = this.analyticsService.loadRentDebt()
+  public rent = this.analyticsService.loadRent()
 }

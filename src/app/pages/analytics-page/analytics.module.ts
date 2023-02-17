@@ -6,6 +6,10 @@ import {AnalyticsRoutingModule} from "./analytics-routing.module";
 import {TuiAccordionModule} from "@taiga-ui/kit";
 import {AnalyticsService} from "./services/analytics.service";
 import { RentDebtComponent } from './components/rent-debt/rent-debt.component';
+import {TuiPieChartModule} from "@taiga-ui/addon-charts";
+import {TuiHintModule} from "@taiga-ui/core";
+import {TuiMoneyModule} from "@taiga-ui/addon-commerce";
+import { RentChartComponent } from './components/rent-chart/rent-chart.component';
 
 
 
@@ -13,12 +17,16 @@ import { RentDebtComponent } from './components/rent-debt/rent-debt.component';
   declarations: [
     AnalyticsPageComponent,
     LeakListComponent,
-    RentDebtComponent
+    RentDebtComponent,
+    RentChartComponent
   ],
   imports: [
     CommonModule,
     AnalyticsRoutingModule,
-    TuiAccordionModule
+    TuiAccordionModule,
+    TuiPieChartModule,
+    TuiHintModule,
+    TuiMoneyModule
   ],
   providers: [
     AnalyticsService

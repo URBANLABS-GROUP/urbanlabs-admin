@@ -10,4 +10,8 @@ import {EMPTY, Observable} from "rxjs";
 export class RentDebtComponent {
   @Input()
   public debt: Observable<any> = EMPTY
+
+  readonly value = [13769, 12367];
+  readonly labels = ['Оплатили', 'Не оплатили'];
 }
+

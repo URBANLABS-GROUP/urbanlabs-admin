@@ -1,16 +1,21 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {EMPTY} from "rxjs";
 
 @Injectable()
 export class AnalyticsService {
 
-  constructor() { }
+  constructor() {
+  }
 
   public loadLeaks() {
     return EMPTY
   }
 
   public loadRentDebt() {
+    return EMPTY
+  }
+
+  public loadRent() {
     return EMPTY
   }
 }
