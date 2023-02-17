@@ -8,10 +8,11 @@ import { AnalyticsService } from "./services/analytics.service";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AnalyticsPageComponent {
-  constructor(private analyticsService: AnalyticsService) {
-  }
+  public leaks
+  public rent
 
-  public leaks = this.analyticsService.loadLeaks()
-  public debt = this.analyticsService.loadRentDebt()
-  public rent = this.analyticsService.loadRent(1, '2023-02-01', '2023-03-01')
+  constructor(private analyticsService: AnalyticsService) {
+    this.leaks = this.analyticsService.loadLeaks()
+    this.rent = this.analyticsService.loadMonthRent(1, '2023-02-01T00:00:00Z', '2023-03-01T00:00:00Z')
+  }
 }
