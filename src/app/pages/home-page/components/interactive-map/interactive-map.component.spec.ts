@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 
-import { HomePageComponent } from "./home-page.component"
+import { InteractiveMapComponent } from "./interactive-map.component"
 
-describe("HomePageComponent", () => {
-  let component: HomePageComponent
-  let fixture: ComponentFixture<HomePageComponent>
+describe("InteractiveMapComponent", () => {
+  let component: InteractiveMapComponent
+  let fixture: ComponentFixture<InteractiveMapComponent>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HomePageComponent ]
+      imports: [ InteractiveMapComponent ]
     })
       .compileComponents()
 
-    fixture = TestBed.createComponent(HomePageComponent)
+    fixture = TestBed.createComponent(InteractiveMapComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })
