@@ -8,7 +8,7 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 })
 export class RentChartComponent {
   @Input()
-  public rent = null
+  public rent: any = null
 
   readonly value = [13769, 12367]
   readonly labels = ['Арендовано', 'Сдается']
