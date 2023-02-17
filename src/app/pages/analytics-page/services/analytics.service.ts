@@ -1,14 +1,14 @@
-import {Injectable} from '@angular/core';
-import {EMPTY} from "rxjs";
-import {ConfigService} from "../../../global/services/config/config.service";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import { Injectable } from '@angular/core';
+import { EMPTY } from "rxjs";
+import { ConfigService } from "../../../global/services/config/config.service";
+import { HttpClient, HttpParams } from "@angular/common/http";
 
 @Injectable()
 export class AnalyticsService {
   private analyticsUrl: string = ''
 
   constructor(private configService: ConfigService, private httpClient: HttpClient) {
-    this.analyticsUrl = `${this.configService.baseApiUrl}/analytics/`
+    this.analyticsUrl = `${ this.configService.baseApiUrl }/analytics/`
   }
 
   public loadLeaks() {
@@ -27,6 +27,6 @@ export class AnalyticsService {
       }
     })
 
-    return this.httpClient.get(`${this.analyticsUrl}/analyze/${id}`, {params})
+    return this.httpClient.get(`${ this.analyticsUrl }/analyze/${ id }`, { params })
   }
 }
