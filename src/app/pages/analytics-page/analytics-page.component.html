@@ -1,9 +1,9 @@
 <urb-leak-list
-  [leaks]="leaks | async"
+        [leaks]="leaks | async"
 ></urb-leak-list>
-<urb-rent-debt
-  [debt]="debt | async"
-></urb-rent-debt>
-<urb-rent-chart
-  [rent]="rent | async"
-></urb-rent-chart>
+<urb-rent-month-debt
+        [debt]="rent | async"
+></urb-rent-month-debt>
+<urb-rent-month-count
+        [rent]="rent | async"
+></urb-rent-month-count>
