@@ -1,5 +1,4 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {EMPTY, Observable} from "rxjs";
 
 @Component({
   selector: 'urb-leak-list',
@@ -9,5 +8,5 @@ import {EMPTY, Observable} from "rxjs";
 })
 export class LeakListComponent {
   @Input()
-  public leaks: Observable<any> = EMPTY
+  public leaks = null
 }
