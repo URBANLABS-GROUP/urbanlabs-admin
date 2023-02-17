@@ -1,1 +1,9 @@
-<p>analytics-page works!</p>
+<urb-leak-list
+  [leaks]="leaks | async"
+></urb-leak-list>
+<urb-rent-debt
+  [debt]="debt | async"
+></urb-rent-debt>
+<urb-rent-chart
+  [rent]="rent | async"
+></urb-rent-chart>
