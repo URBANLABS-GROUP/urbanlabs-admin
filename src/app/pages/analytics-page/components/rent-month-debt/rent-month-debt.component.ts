@@ -18,7 +18,7 @@ export class RentMonthDebtComponent implements OnChanges {
     const currentValue: Rent | null = changes[ 'debt' ].currentValue
 
     if (currentValue !== null) {
-      this.value = [ currentValue.realIncome, currentValue.expectedIncome ]
+      this.value = [ currentValue.realIncome, currentValue.expectedIncome - currentValue.realIncome ]
     }
   }
 }

@@ -24,6 +24,14 @@ export class AnalyticsService {
       }
     })
 
+    // return of({
+    //   date: "2023-02-01T00:00:00.000+00:00",
+    //   expectedIncome: 100000,
+    //   realIncome: 35000,
+    //   rentCount: 2,
+    //   roomCount: 3
+    // })
+
     return this.httpClient.get<Rent[]>(`${ this.analyticsUrl }analyze/${ id }`, { params }).pipe(
       map((rents) => rents[ 0 ]),
       shareReplay(1)
