@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common"
 import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, Output, SimpleChange } from "@angular/core"
-import { Map as LeafletMap, MapOptions } from "leaflet"
+import { MapOptions } from "leaflet"
+import { LeafletMap } from "../../models"
 
 type InteractiveMapSimpleChanges = {
   options: SimpleChange
@@ -13,7 +14,9 @@ type InteractiveMapSimpleChanges = {
   template: "",
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [
-    `:host { display: block }`
+    `:host {
+      display: block
+    }`
   ]
 })
 export class InteractiveMapComponent implements OnChanges, OnDestroy {
