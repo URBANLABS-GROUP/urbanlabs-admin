@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
-import { CRS, MapOptions, SVGOverlay } from "leaflet"
+import { FormControl } from "@angular/forms"
+import { CRS, LayerGroup, MapOptions, SVGOverlay } from "leaflet"
+import { startWith } from "rxjs"
 import { LeafletMap } from "./models"
 /*
 
@@ -58,7 +60,7 @@ type Floor = {
   bounding: any
 }
 
-function getSvgs(): { "floor1": Floor, "floor2": Floor } {
+function getSvgs(): Record<string, Floor> {
   const el = document.createElementNS("http://www.w3.org/2000/svg", "svg")
   el.setAttribute("viewBox", "0 0 190 728")
   el.setAttribute("fill", "transparent")
@@ -74,12 +76,12 @@ function getSvgs(): { "floor1": Floor, "floor2": Floor } {
   <path stroke="#000" stroke-width="2" d="M2 64h125M1 0v728M189 2v726M2 727h186M2 1h188M116 369h74M0 369h74M128 609v56M126 63v56M127 610H60M56 555H0M56 183H0M56 493H0M56 305H0M56 431H0M56 243H0M132 493h56M132 305h56M132 431h56M132 243h56M132 555h56M132 181h56M55 383v-13M55 195v-13M133 443v-13M133 255v-13M133 507v-13M133 319v-13M55 507v-13M55 319v-13M55 445v-13M55 257v-13M133 417v13M133 229v13M55 430v-13M55 242v-13M133 492v-13M133 304v-13M133 554v-13M133 368v-13M55 554v-13M55 368v-13M55 492v-13M55 304v-13M133 370v13M133 182v13M127 119H60M20 610H0M21 119H1"/>`
 
   return {
-    floor1: {
+    "1": {
       level: 1,
       svgElement: el,
       bounding: [ [ 0, 0 ], [ 728, 190 ] ]
     },
-    floor2: {
+    "2": {
       level: 2,
       svgElement: el2,
       bounding: [ [ 0, 0 ], [ 728, 190 ] ]
@@ -100,21 +102,29 @@ export class HomePageComponent {
     minZoom: -5
   }
 
+  protected selectedLevel = new FormControl(1)
+
+  protected levels = [ 1, 2 ]
+
   constructor() {
+
   }
 
   protected onMapInstance(mapInstance: LeafletMap) {
+    const floors = getSvgs()
+    const levelsLayerGroup = new LayerGroup()
+    mapInstance.addLayer(levelsLayerGroup)
 
-    const floor = getSvgs().floor2
-
-    mapInstance.addLayer(new SVGOverlay(floor.svgElement, floor.bounding))
-    mapInstance.fitBounds(floor.bounding)
-
-    // const line = new Polyline([ [50, 0], [50, 400] ], { color: "red", lineCap: "butt" })
-    // line.addTo(mapInstance)
-    // const bounds: any = [ [ 0, 0 ], [ 400, 200 ] ]
-    // const overlay = new ImageOverlay("/assets/rect.png", bounds)
-    // overlay.addTo(mapInstance)
-    // mapInstance.fitBounds(bounds)
+    this.selectedLevel.valueChanges
+      .pipe(
+        startWith(this.selectedLevel.value)
+      )
+      .subscribe((level) => {
+        debugger
+        levelsLayerGroup.eachLayer(l => l.remove())
+        const floor = Reflect.get(floors, String(level))
+        levelsLayerGroup.addLayer(new SVGOverlay(floor.svgElement, floor.bounding))
+        mapInstance.fitBounds(floor.bounding)
+      })
   }
 }
