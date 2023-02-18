@@ -325,6 +325,7 @@ export class HomePageComponent {
 
               if (businessCenter) {
                 const storeyController = businessCenter.get(result.id)
+                businessCenter.forEach((storeyController) => storeyController.hide())
 
                 storeyController?.show(leafletMap)
               }
@@ -335,6 +336,7 @@ export class HomePageComponent {
               const businessCenter = businessCentersById.get(result.parentBusinessCenterId)
 
               if (businessCenter) {
+                businessCenter.forEach((storeyController) => storeyController.hide())
                 const storeyController = businessCenter.get(result.parentStoreyId)
 
                 if (storeyController) {
