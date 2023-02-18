@@ -44,12 +44,12 @@ export class RentPeriodDebtComponent implements OnChanges {
       }
 
       const currentDate = new Date(rent.date)
-      period.push(period.length === 0 ? `${ this.monthMap[ currentDate.getMonth() ] } ${ currentDate.getFullYear() }` : this.monthMap[ currentDate.getMonth() ])
+      period.push(period.length === 0 ? `${ this.monthMap[ currentDate.getMonth() ].slice(0, 3) } ${ currentDate.getFullYear() }` : this.monthMap[ currentDate.getMonth() ].slice(0, 3))
     })
 
     this.labelsX = period
     this.max = maxY
-    this.labelsY = [ '0', maxY.toString() + ' ₽' ]
+    this.labelsY = [ '0', maxY.toString().slice(0, 3) + 'К ₽' ]
     this.value = values
   }
 

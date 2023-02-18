@@ -14,6 +14,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { RentPeriodCountComponent } from './components/rent-period-count/rent-period-count.component';
 import { RentPeriodDebtComponent } from './components/rent-period-debt/rent-period-debt.component';
 import { TempChartComponent } from './components/temp-chart/temp-chart.component';
+import { PowerChartComponent } from './components/power-chart/power-chart.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { TempChartComponent } from './components/temp-chart/temp-chart.component
     RentMonthCountComponent,
     RentPeriodCountComponent,
     RentPeriodDebtComponent,
-    TempChartComponent
+    TempChartComponent,
+    PowerChartComponent
   ],
   imports: [
     CommonModule,

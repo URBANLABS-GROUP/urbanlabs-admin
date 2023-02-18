@@ -4,6 +4,7 @@ import { ConfigService } from "../../../global/services/config/config.service";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Rent } from "../models/rent";
 import { TempChart } from "../models/temp";
+import { PowerChart } from "../models/power";
 
 @Injectable()
 export class AnalyticsService {
@@ -22,6 +23,19 @@ export class AnalyticsService {
     })
 
     return this.httpClient.get<TempChart[]>(`${ this.analyticsUrl }/plot/temp/${ id }`, { params }).pipe(
+      shareReplay(1)
+    )
+  }
+
+  public loadPowerChart(id: number, from: string, to: string) {
+    const params = new HttpParams({
+      fromObject: {
+        from,
+        to
+      }
+    })
+
+    return this.httpClient.get<PowerChart[]>(`${ this.analyticsUrl }/plot/power/${ id }`, { params }).pipe(
       shareReplay(1)
     )
   }

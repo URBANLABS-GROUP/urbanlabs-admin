@@ -44,7 +44,7 @@ export class RentPeriodCountComponent implements OnChanges {
       }
 
       const currentDate = new Date(rent.date)
-      period.push(period.length === 0 ? `${ this.monthMap[ currentDate.getMonth() ] } ${ currentDate.getFullYear() }` : this.monthMap[ currentDate.getMonth() ])
+      period.push(period.length === 0 ? `${ this.monthMap[ currentDate.getMonth() ].slice(0, 3) } ${ currentDate.getFullYear() }` : this.monthMap[ currentDate.getMonth() ].slice(0, 3))
     })
 
     this.labelsX = period

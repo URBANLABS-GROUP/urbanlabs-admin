@@ -1,9 +1,9 @@
 export interface TempChart {
   name: string
-  points: TempPoint[]
+  points: Point[]
 }
 
-export interface TempPoint {
+export interface Point {
   x: string,
   y: number
 }
