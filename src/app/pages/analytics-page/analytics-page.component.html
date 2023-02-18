@@ -1,3 +1,17 @@
+<section class="widgets">
+  <urb-balance
+      [rents]="rents | async"
+  ></urb-balance>
+
+  <urb-rent-income
+      [income]="rents | async"
+  ></urb-rent-income>
+
+  <urb-power-expenses
+      [expenses]="rents | async"
+  ></urb-power-expenses>
+</section>
+
 <urb-rent-month-debt
     [debt]="rent | async"
 ></urb-rent-month-debt>

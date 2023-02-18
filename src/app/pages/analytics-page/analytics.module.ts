@@ -14,6 +14,9 @@ import { RentPeriodCountComponent } from './components/rent-period-count/rent-pe
 import { RentPeriodDebtComponent } from './components/rent-period-debt/rent-period-debt.component';
 import { TempChartComponent } from './components/temp-chart/temp-chart.component';
 import { PowerChartComponent } from './components/power-chart/power-chart.component';
+import { PowerExpensesComponent } from './components/power-expenses/power-expenses.component';
+import { RentIncomeComponent } from './components/rent-income/rent-income.component';
+import { BalanceComponent } from './components/balance/balance.component';
 
 
 @NgModule({
@@ -24,7 +27,10 @@ import { PowerChartComponent } from './components/power-chart/power-chart.compon
     RentPeriodCountComponent,
     RentPeriodDebtComponent,
     TempChartComponent,
-    PowerChartComponent
+    PowerChartComponent,
+    PowerExpensesComponent,
+    RentIncomeComponent,
+    BalanceComponent
   ],
   imports: [
     CommonModule,
