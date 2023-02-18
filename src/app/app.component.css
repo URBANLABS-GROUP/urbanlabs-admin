@@ -37,8 +37,12 @@
   color: var(--tui-primary) !important;
 }
 
-.user-container a:not(.user-icon) {
+.user-container a {
   display: none;
+}
+
+.user-icon {
+  display: block;
 }
 
 @media screen and (max-width: 47.9625em) {
@@ -46,6 +50,9 @@
     top: unset;
     bottom: 0;
     grid-template-columns: unset;
+    border-top: 1px solid var(--tui-base-03);
+    margin: -16px;
+    padding: 16px;
   }
 
   .logo-container,

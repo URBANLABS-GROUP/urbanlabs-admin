@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { BoundsLiteral, CRS, LayerGroup, MapOptions, Polygon, SVGOverlay } from "leaflet"
-import { BehaviorSubject, catchError, firstValueFrom, map, Observable, of, shareReplay, switchMap, take, tap, timer } from "rxjs"
+import { BehaviorSubject, catchError, firstValueFrom, map, Observable, of, shareReplay, switchMap, take, tap, timer, withLatestFrom } from "rxjs"
 import { BusinessCenter, BusinessCenterStorey, BusinessCenterStoreyMap, LeafletMap, Room, RoomTelemetryInfo } from "./models"
 import { HomeApiService } from "./services/home-api.service"
 
@@ -194,6 +194,10 @@ function createStoreyController(storey: BusinessCenterStorey,
   }
 }
 
+function isMobile(): boolean {
+  return window.matchMedia("screen and (max-width: 47.9625em)").matches
+}
+
 @Component({
   selector: "urb-home-page",
   templateUrl: "./home-page.component.html",
@@ -208,6 +212,10 @@ export class HomePageComponent {
   }
 
   protected isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
+
+  protected isTreeOpen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+
+  protected isPortalOpen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
   private businessCenters: Observable<readonly BusinessCenter[]> = this.homeApiService.getBusinessCenters().pipe(
     shareReplay(1)
@@ -265,12 +273,19 @@ export class HomePageComponent {
   )
 
   protected selectedRoomTelemetryInfo: Observable<any> = this.selectedTreeNode.pipe(
-    switchMap((symbol: UrbTreeNodeSymbol | null) => {
+    withLatestFrom(this.businessCenterTrees),
+    switchMap(([ symbol, businessCenterTrees ]: [ UrbTreeNodeSymbol | null, UrbTreeNode[] ]) => {
       if (symbol === null) {
         return of(null)
       }
 
       const [ , id ] = symbol.split(":")
+
+      const treeNode: UrbTreeNode | null = searchTreeNodeSeveral(symbol, businessCenterTrees)
+
+      if (treeNode === null) {
+        throw new Error(`TreeNode with symbol="${ symbol }" not found`)
+      }
 
       return timer(0, 15_000).pipe(
         switchMap(() => this.homeApiService.getRoomTelemetryInfo(parseFloat(id)).pipe(
@@ -341,7 +356,7 @@ export class HomePageComponent {
             })
 
             return {
-              roomName: "Привет",
+              roomName: `Помещение: ${ treeNode.name }`,
               result
             }
           }),
@@ -453,10 +468,30 @@ export class HomePageComponent {
   }
 
   protected onClickTreeNode(treeNode: UrbTreeNode): void {
+    if (isMobile()) {
+      this.isTreeOpen.next(false)
+    }
+
     this.selectedTreeNode.next(`${ treeNode.type }:${ treeNode.id }`)
   }
 
   protected childrenHandler(node: any): any[] {
     return node.children ?? []
+  }
+
+  protected onClickTreeHeader(): void {
+    if (!isMobile()) {
+      return
+    }
+
+    this.isTreeOpen.next(!this.isTreeOpen.value)
+  }
+
+  public onClickPortal() {
+    if (!isMobile()) {
+      return
+    }
+
+    this.isPortalOpen.next(!this.isPortalOpen.value)
   }
 }

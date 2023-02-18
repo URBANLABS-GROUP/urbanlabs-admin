@@ -4,10 +4,12 @@
   (mapInstanceChanges)="onCreateMap($event)"
 />
 
-<div class="portal">
+<div class="portal" [class.is-open]="isPortalOpen | async">
   <tui-scrollbar>
     <tui-island class="telemetry-info-island" *ngIf="selectedRoomTelemetryInfo | async as info">
-      <h3 class="tui-island__title">{{ info.roomName }}</h3>
+      <header (click)="onClickPortal()" class="telemetry-info-island-header">
+        <h3 class="tui-island__title">{{ info.roomName }}</h3>
+      </header>
 
       <div class="telemetry-info-island-content tui-island__content">
         <ul class="telemetry-list">
@@ -16,17 +18,15 @@
             <span class="value">{{ keyValue.value }}</span>
           </li>
         </ul>
-        <!--<ng-container *ngFor="let keyValue of info.result">
-          <span class="key">{{ keyValue.key }}</span>
-          <span class="value">{{ keyValue.value }}</span>
-        </ng-container>-->
       </div>
     </tui-island>
   </tui-scrollbar>
 </div>
 
-<tui-island class="tree-island">
-  <h3 class="tui-island__title">Комнаты</h3>
+<tui-island class="tree-island" [class.is-open]="isTreeOpen | async">
+  <header (click)="onClickTreeHeader()" class="tree-island-header">
+    <h3 class="tui-island__title">Помещения</h3>
+  </header>
 
   <tui-loader *ngIf="isLoading | async; else tree"></tui-loader>
 </tui-island>
