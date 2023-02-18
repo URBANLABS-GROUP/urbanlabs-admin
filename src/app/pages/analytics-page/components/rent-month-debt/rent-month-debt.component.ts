@@ -11,7 +11,7 @@ export class RentMonthDebtComponent implements OnChanges {
   @Input()
   public debt: Rent | null = null
 
-  readonly labels = [ 'Оплатили', 'Не оплатили' ]
+  readonly labels = [ 'Оплачено', 'Задолженность' ]
   public value: number[] = []
 
   ngOnChanges(changes: SimpleChanges): void {

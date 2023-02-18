@@ -11,7 +11,7 @@ export class RentMonthCountComponent implements OnChanges {
   @Input()
   public rent: Rent | null = null
 
-  readonly labels = [ 'Арендовано', 'Сдается' ]
+  readonly labels = [ 'Арендовано', 'Свободно' ]
   public value: number[] = []
 
   ngOnChanges(changes: SimpleChanges): void {
