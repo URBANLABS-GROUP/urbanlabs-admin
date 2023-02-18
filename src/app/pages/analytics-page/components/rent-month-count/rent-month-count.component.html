@@ -1,15 +1,17 @@
-<tui-pie-chart
-  [value]="value"
-  [tuiHintContent]="content"
-></tui-pie-chart>
+<tui-island *ngIf="value.length > 0">
+  <p class="tui-island__category">аренда</p>
+  <h3 class="tui-island__title">Арендовано за месяц</h3>
+  <tui-pie-chart
+      class="pie-chart"
+      [value]="value"
+      [tuiHintContent]="content"
+  ></tui-pie-chart>
+</tui-island>
 
 <ng-template
-  #content
-  let-index
+    #content
+    let-index
 >
-  <tui-money
-    [singleColor]="true"
-    [value]="value[index]"
-  ></tui-money>
-  <div>{{ labels[index] }}</div>
+  <div>{{ value[ index ] }}</div>
+  <div>{{ labels[ index ] }}</div>
 </ng-template>

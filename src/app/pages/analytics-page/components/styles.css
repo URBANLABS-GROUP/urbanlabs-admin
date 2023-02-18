@@ -1,0 +1,16 @@
+.axes {
+    height: 14rem;
+    width: 100%;
+    margin: 2rem auto;
+
+    --tui-chart-0: skyblue;
+    --tui-chart-1: violet;
+}
+
+.pie-chart {
+    margin: 2rem auto;
+}
+
+.flex {
+    display: flex;
+}

@@ -1,20 +1,14 @@
-<tui-accordion class="container">
+<tui-accordion class="container" *ngIf="leaks !== null && leaks.length > 0">
   <tui-accordion-item>
-    Перерасход электричества
+    Нас ебут
     <ng-template tuiAccordionItemContent>
-      Нужно построить Зиккурат
+      Сэр, нам присунули и продолжают иметь
     </ng-template>
   </tui-accordion-item>
   <tui-accordion-item>
-    Перерасход газа вэспен
+    У нас Африка
     <ng-template tuiAccordionItemContent>
-      Нужно построить завод
-    </ng-template>
-  </tui-accordion-item>
-  <tui-accordion-item>
-    Перерасход воды
-    <ng-template tuiAccordionItemContent>
-      У тебя тут бассейн шо ли?
+      Объявились горячие тяночки и стало слишком жарко
     </ng-template>
   </tui-accordion-item>
 </tui-accordion>
