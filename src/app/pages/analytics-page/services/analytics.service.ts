@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EMPTY, map, Observable, of, shareReplay } from "rxjs";
+import { EMPTY, Observable, of } from "rxjs";
 import { ConfigService } from "../../../global/services/config/config.service";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Rent } from "../models/rent";
@@ -24,18 +24,18 @@ export class AnalyticsService {
       }
     })
 
-    // return of({
-    //   date: "2023-02-01T00:00:00.000+00:00",
-    //   expectedIncome: 100000,
-    //   realIncome: 35000,
-    //   rentCount: 2,
-    //   roomCount: 3
-    // })
+    return of({
+      date: "2023-02-01T00:00:00.000+00:00",
+      expectedIncome: 100000,
+      realIncome: 35000,
+      rentCount: 2,
+      roomCount: 3
+    })
 
-    return this.httpClient.get<Rent[]>(`${ this.analyticsUrl }analyze/${ id }`, { params }).pipe(
-      map((rents) => rents[ 0 ]),
-      shareReplay(1)
-    )
+    // return this.httpClient.get<Rent[]>(`${ this.analyticsUrl }analyze/${ id }`, { params }).pipe(
+    //   map((rents) => rents[ 0 ]),
+    //   shareReplay(1)
+    // )
   }
 
   public loadPeriodRents(id: number, from: string, to: string): Observable<Rent[]> {
@@ -57,14 +57,14 @@ export class AnalyticsService {
       {
         date: "2023-02-01T00:00:00.000+00:00",
         expectedIncome: 100000,
-        realIncome: 35000,
+        realIncome: 75000,
         rentCount: 6,
         roomCount: 10
       },
       {
         date: "2023-03-01T00:00:00.000+00:00",
-        expectedIncome: 100000,
-        realIncome: 35000,
+        expectedIncome: 150000,
+        realIncome: 120000,
         rentCount: 9,
         roomCount: 10
       }

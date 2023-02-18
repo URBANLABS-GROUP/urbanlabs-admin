@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } f
 import { TuiContextWithImplicit } from "@taiga-ui/cdk";
 import { tuiFormatNumber } from "@taiga-ui/core";
 import { Rent } from "../../models/rent";
+import { monthMap } from "../../common/month-map";
 
 @Component({
   selector: 'urb-rent-period-count',
@@ -10,20 +11,7 @@ import { Rent } from "../../models/rent";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RentPeriodCountComponent implements OnChanges {
-  private monthMap: Record<number, string> = {
-    0: 'Янв',
-    1: 'Фев',
-    2: 'Мар',
-    3: 'Апр',
-    4: 'Май',
-    5: 'Июн',
-    6: 'Июл',
-    7: 'Авг',
-    8: 'Сен',
-    9: 'Окт',
-    10: 'Ноя',
-    11: 'Дек',
-  }
+  private monthMap: Record<number, string> = monthMap
 
   @Input()
   public rents: Rent[] | null = null
@@ -75,7 +63,6 @@ export class RentPeriodCountComponent implements OnChanges {
 
     if (currentValue !== null) {
       this.setChartData(currentValue)
-      console.log(currentValue)
     }
   }
 }
