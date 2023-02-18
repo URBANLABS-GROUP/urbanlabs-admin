@@ -16,15 +16,15 @@
       {{ leakDescriptionMap[ leak.alertType ] }}
 
       <span *ngIf="leak.alertType === leakType.tooHotTemp">
-        Текущая температура {{ leak.currentTemp }} С.
+        Текущая температура {{ leak.currentTemp ? leak.currentTemp / 10 : '' }} С в помещении №{{ leak.roomId }}.
       </span>
 
       <span *ngIf="leak.alertType === leakType.negativeProfit">
-        Ушли в минус на {{ leak.expense }} ₽.
+        Ушли в минус на {{ leak.expense ? (leak.expense | tuiFormatNumber) : '' }} ₽ в помещении №{{ leak.roomId }}.
       </span>
 
       <span *ngIf="leak.alertType === leakType.tooMuchPowerConsuming">
-        Текущее потребление электроэнергии {{ leak.currentPowerConsumption }} Вт.
+        Текущее потребление электроэнергии {{ leak.currentPowerConsumption }} Вт в помещении №{{ leak.roomId }}.
       </span>
 
     </ng-template>
