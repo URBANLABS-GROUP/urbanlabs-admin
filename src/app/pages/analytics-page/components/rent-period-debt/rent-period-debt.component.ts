@@ -7,7 +7,7 @@ import { monthMap } from '../../common/month-map';
 @Component({
   selector: 'urb-rent-period-debt',
   templateUrl: './rent-period-debt.component.html',
-  styleUrls: [ './rent-period-debt.component.css' ],
+  styleUrls: [ '../styles.css' ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RentPeriodDebtComponent implements OnChanges {
@@ -18,13 +18,10 @@ export class RentPeriodDebtComponent implements OnChanges {
 
   public max = 1
 
-  public value = [
-    [ 0 ],
-    [ 0 ],
-  ];
+  public value: number[][] = []
 
-  public labelsX: string[] = [];
-  public labelsY: string[] = [];
+  public labelsX: string[] = []
+  public labelsY: string[] = []
 
   public appearance = 'onDark';
 
@@ -54,7 +51,7 @@ export class RentPeriodDebtComponent implements OnChanges {
 
     this.labelsX = period
     this.max = maxY
-    this.labelsY = [ '0', maxY.toString() ]
+    this.labelsY = [ '0', maxY.toString() + ' ₽' ]
     this.value = values
   }
 

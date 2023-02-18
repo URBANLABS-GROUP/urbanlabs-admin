@@ -4,7 +4,7 @@ import { Rent } from "../../models/rent";
 @Component({
   selector: 'urb-rent-month-count',
   templateUrl: './rent-month-count.component.html',
-  styleUrls: [ './rent-month-count.component.css' ],
+  styleUrls: [ '../styles.css' ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RentMonthCountComponent implements OnChanges {

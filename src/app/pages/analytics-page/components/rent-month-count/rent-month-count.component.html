@@ -1,8 +1,8 @@
-<tui-island>
+<tui-island *ngIf="value.length > 0">
   <p class="tui-island__category">аренда</p>
   <h3 class="tui-island__title">Арендовано за месяц</h3>
   <tui-pie-chart
-      *ngIf="value.length > 0"
+      class="pie-chart"
       [value]="value"
       [tuiHintContent]="content"
   ></tui-pie-chart>

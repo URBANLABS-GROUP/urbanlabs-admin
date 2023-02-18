@@ -1,13 +1,18 @@
-<tui-axes
-    class="axes"
-    [axisXLabels]="labelsX"
-    [axisYLabels]="labelsY"
->
-  <tui-bar-chart
-      [tuiHintAppearance]="appearance"
-      [max]="max"
-      [value]="value"
-      [collapsed]="true"
-      [tuiHintContent]="hint"
-  ></tui-bar-chart>
-</tui-axes>
+<tui-island *ngIf="value.length > 0">
+  <p class="tui-island__category">аренда</p>
+  <h3 class="tui-island__title">Оплата за период</h3>
+
+  <tui-axes
+      class="axes"
+      [axisXLabels]="labelsX"
+      [axisYLabels]="labelsY"
+  >
+    <tui-bar-chart
+        [tuiHintAppearance]="appearance"
+        [max]="max"
+        [value]="value"
+        [collapsed]="true"
+        [tuiHintContent]="hint"
+    ></tui-bar-chart>
+  </tui-axes>
+</tui-island>

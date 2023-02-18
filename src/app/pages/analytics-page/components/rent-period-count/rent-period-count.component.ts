@@ -7,7 +7,7 @@ import { monthMap } from "../../common/month-map";
 @Component({
   selector: 'urb-rent-period-count',
   templateUrl: './rent-period-count.component.html',
-  styleUrls: [ './rent-period-count.component.css' ],
+  styleUrls: [ '../styles.css' ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RentPeriodCountComponent implements OnChanges {
@@ -18,15 +18,12 @@ export class RentPeriodCountComponent implements OnChanges {
 
   public max = 1
 
-  public value = [
-    [ 0 ],
-    [ 0 ],
-  ];
+  public value: number[][] = []
 
-  public labelsX: string[] = [];
-  public labelsY: string[] = [];
+  public labelsX: string[] = []
+  public labelsY: string[] = []
 
-  public appearance = 'onDark';
+  public appearance = 'onDark'
 
   readonly hint = ({ $implicit }: TuiContextWithImplicit<number>): string =>
     this.value
