@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { FormControl } from "@angular/forms"
 import { CRS, LayerGroup, MapOptions, SVGOverlay } from "leaflet"
-import { BehaviorSubject, filter, firstValueFrom, map, Observable, take } from "rxjs"
+import { BehaviorSubject, combineLatest, filter, firstValueFrom, map, Observable, startWith, take, tap } from "rxjs"
 import { BusinessCenter, BusinessCenterStoreyMap, LeafletMap } from "./models"
 import { HomeApiService } from "./services/home-api.service"
 
@@ -24,7 +24,7 @@ export class HomePageComponent {
     minZoom: -5
   }
 
-  protected selectedLevel = new FormControl(1)
+  protected selectedLevel = new FormControl<number>(1, { nonNullable: true })
 
   protected search = new FormControl()
 
@@ -54,12 +54,15 @@ export class HomePageComponent {
               id: storey.id,
               type: "STOREY",
               name: storey.name,
+              parentBusinessCenter: businessCenter,
               __origin: storey,
               children: storey.rooms.map((room) => {
                 return {
                   id: room.id,
                   type: "ROOM",
                   name: room.name,
+                  parentBusinessCenter: businessCenter,
+                  parentStorey: storey,
                   __origin: room,
                   children: []
                 }
@@ -83,6 +86,8 @@ export class HomePageComponent {
     const businessCenters: readonly BusinessCenter[] = await firstValueFrom(this.homeApiService.getBusinessCenters().pipe(take(1)))
 
     const businessCentersById = new Map()
+    const masterLayerGroup = new LayerGroup()
+    mapInstance.addLayer(masterLayerGroup)
 
     for (const businessCenter of businessCenters) {
       const storeysById = new Map()
@@ -109,8 +114,24 @@ export class HomePageComponent {
       businessCentersById.set(businessCenter.id, storeysById)
     }
 
-    mapInstance.addLayer(businessCentersById.get(1).get(1).layer)
-    mapInstance.fitBounds(businessCentersById.get(1).get(1).bounding)
+    // mapInstance.addLayer(businessCentersById.get(1).get(1).layer)
+    // mapInstance.fitBounds(businessCentersById.get(1).get(1).bounding)
+
+    combineLatest([
+      this.selectedLevel.valueChanges.pipe(
+        startWith(this.selectedLevel.value)
+      ),
+      this.selectedData
+    ]).pipe(
+      filter(([ , data ]) => data.businessCenter !== null),
+      tap(([ , data ]) => {
+        masterLayerGroup.eachLayer(s => s.remove())
+        const businessCenter = businessCentersById.get((data.businessCenter as any).id)
+        const storey = businessCenter.get((data.storey as any).id)
+        masterLayerGroup.addLayer(storey.layer)
+        mapInstance.fitBounds(storey.bounding)
+      })
+    ).subscribe()
 
     /*const floors = getSvgs()
     const levelsLayerGroup = new LayerGroup()
@@ -191,16 +212,20 @@ export class HomePageComponent {
       case "STOREY": {
         this.selectedData.next({
           ...this.selectedData.value,
-          storey: event.__origin
+          storey: event.__origin,
+          businessCenter: event.parentBusinessCenter,
         } as any)
+        this.selectedLevel.setValue(event.__origin.level)
         break
       }
 
       case "ROOM": {
         this.selectedData.next({
-          ...this.selectedData.value,
-          room: event.__origin
+          room: event.__origin,
+          storey: event.parentStorey,
+          businessCenter: event.parentBusinessCenter,
         } as any)
+        this.selectedLevel.setValue(event.parentStorey.level)
         break
       }
     }

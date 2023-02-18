@@ -2,7 +2,7 @@
                      (mapInstanceChanges)="onMapInstance($event)" />
 
 <tui-island class="tree-island">
-  <h3 class="tui-island__title">Title</h3>
+  <h3 class="tui-island__title">Дерево</h3>
 
   <!--<div>
     <tui-input [formControl]="search" [tuiTextfieldSize]="'s'">
@@ -42,7 +42,6 @@
 <ng-template
   #treeNodeTemplate
   let-value
-  let-node="node"
 >
   <div (click)="onClickTreeNode(value)" class="urb-tree-node">
     {{ value.name }}
