@@ -22,6 +22,18 @@ export type BusinessCenter = {
   storeys: readonly BusinessCenterStorey[]
 }
 
+export type RoomTelemetryInfo = {
+  curTemp: number | null
+  averageCurTemp: number | null
+  curDayPowerConsumption: number | null
+  averagePowerConsumption: number | null
+  curDayWaterConsumption: number | null
+  averageWaterConsumption: number | null
+  rent: number | null
+  expenses: number | null
+  move: boolean | null
+}
+
 export type BusinessCenterStoreyMap = {
   svgContainer: {
     attributes: Record<string, string>

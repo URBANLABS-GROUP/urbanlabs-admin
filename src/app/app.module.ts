@@ -10,6 +10,7 @@ import {
   TuiDialogModule,
   TuiGroupModule,
   TuiLinkModule,
+  TuiLoaderModule,
   TuiRootModule,
   TuiScrollbarModule,
   TuiTextfieldControllerModule
@@ -49,7 +50,8 @@ import { HomePageComponent } from "./pages/home-page/home-page.component"
     TuiScrollbarModule,
     TuiAvatarModule,
     TuiLinkModule,
-    TuiButtonModule
+    TuiButtonModule,
+    TuiLoaderModule
   ],
   providers: [ { provide: TUI_SANITIZER, useClass: NgDompurifySanitizer }, ConfigService ],
   bootstrap: [ AppComponent ]
