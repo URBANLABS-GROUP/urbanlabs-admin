@@ -10,7 +10,7 @@ import { PowerChart } from "../../models/power";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PowerChartComponent implements OnChanges {
-  public height = 200
+  public height = 70
 
   public startY = 0
 
@@ -29,22 +29,10 @@ export class PowerChartComponent implements OnChanges {
     const currentValue: PowerChart[] | null = changes[ 'points' ].currentValue
 
     if (currentValue !== null) {
-      this.values = currentValue.slice(0, 8).map((powerChart) => {
+      this.values = currentValue.slice(0, 2).map((powerChart) => {
         this.rooms.push(powerChart.name)
 
         return powerChart.points.map((point) => {
-          if (this.height < point.y) {
-            this.height = point.y
-          }
-
-          if (this.startY === 0) {
-            this.startY = point.y
-          } else {
-            if (this.startY > point.y) {
-              this.startY = point.y
-            }
-          }
-
           return [ new Date(point.x).getDate(), point.y ];
         });
       })
