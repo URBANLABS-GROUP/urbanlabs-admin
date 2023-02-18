@@ -1,3 +1,32 @@
 :host {
   display: block;
 }
+
+:host ::ng-deep tui-tree-item-content:hover {
+  cursor: pointer;
+  background-color: rgba(204, 204, 204, 0.51);
+  border-radius: 5px;
+}
+
+:host ::ng-deep .urb-tree-node {
+  display: block;
+  width: 100%;
+}
+
+.tree-island {
+  position: fixed;
+  top: 0;
+  right: 0;
+  margin: 10px;
+  z-index: 9999;
+  width: 260px;
+  height: calc(100% - 1rem);
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: 30px 1fr;
+  gap: 10px;
+}
+
+.tree-island-content {
+  overflow-y: auto;
+}

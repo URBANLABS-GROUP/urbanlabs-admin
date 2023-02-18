@@ -6,3 +6,9 @@
 body {
   font: var(--tui-font-text-m) !important;
 }
+
+.urb-tooltip {
+  border: none;
+  background-color: transparent;
+  box-shadow: none;
+}
