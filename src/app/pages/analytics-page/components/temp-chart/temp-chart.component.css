@@ -11,6 +11,8 @@
 .rooms {
     display: flex;
     gap: 4px;
+
+    font-weight: bold;
 }
 
 .chart {
