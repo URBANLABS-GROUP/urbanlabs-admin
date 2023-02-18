@@ -65,8 +65,12 @@
   font-weight: bold;
 }
 
-.telemetry-list li:nth-child(odd) {
-  background-color: var(--tui-secondary-hover);
+.telemetry-info-island-content {
+  line-height: 1.1;
+}
+
+.tui-island__paragraph {
+  margin-bottom: 1rem;
 }
 
 @media screen and (max-width: 47.9625em) {
