@@ -3,8 +3,18 @@ import { NgModule } from "@angular/core"
 import { ReactiveFormsModule } from "@angular/forms"
 import { BrowserModule } from "@angular/platform-browser"
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations"
-import { TUI_SANITIZER, TuiAlertModule, TuiDialogModule, TuiGroupModule, TuiRootModule, TuiScrollbarModule, TuiTextfieldControllerModule } from "@taiga-ui/core"
-import { TuiInputModule, TuiIslandModule, TuiRadioBlockModule, TuiTreeModule } from "@taiga-ui/kit"
+import {
+  TUI_SANITIZER,
+  TuiAlertModule,
+  TuiButtonModule,
+  TuiDialogModule,
+  TuiGroupModule,
+  TuiLinkModule,
+  TuiRootModule,
+  TuiScrollbarModule,
+  TuiTextfieldControllerModule
+} from "@taiga-ui/core"
+import { TuiAvatarModule, TuiInputModule, TuiIslandModule, TuiRadioBlockModule, TuiTreeModule } from "@taiga-ui/kit"
 import { NgDompurifySanitizer } from "@tinkoff/ng-dompurify"
 
 import { AppRoutingModule } from "./app-routing.module"
@@ -36,7 +46,10 @@ import { HomePageComponent } from "./pages/home-page/home-page.component"
     TuiTreeModule,
     TuiInputModule,
     TuiTextfieldControllerModule,
-    TuiScrollbarModule
+    TuiScrollbarModule,
+    TuiAvatarModule,
+    TuiLinkModule,
+    TuiButtonModule
   ],
   providers: [ { provide: TUI_SANITIZER, useClass: NgDompurifySanitizer }, ConfigService ],
   bootstrap: [ AppComponent ]
