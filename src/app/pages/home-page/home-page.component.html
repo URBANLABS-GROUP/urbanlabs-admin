@@ -44,7 +44,7 @@
   #treeNodeTemplate
   let-value
 >
-  <div (click)="onClickTreeNode(value)" class="urb-tree-node">
+  <div (click)="onClickTreeNode(value)" class="urb-tree-node" [class.is-selected]="isSelectedTreeNode(value)">
     {{ value.name }}
   </div>
 </ng-template>

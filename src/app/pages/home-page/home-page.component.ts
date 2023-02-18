@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { FormControl } from "@angular/forms"
 import { CRS, LayerGroup, MapOptions, SVGOverlay } from "leaflet"
 import { BehaviorSubject, filter, firstValueFrom, map, Observable, take, tap } from "rxjs"
-import { BusinessCenter, BusinessCenterStoreyMap, LeafletMap } from "./models"
+import { BusinessCenter, BusinessCenterStorey, BusinessCenterStoreyMap, LeafletMap, Room } from "./models"
 import { HomeApiService } from "./services/home-api.service"
 
 type SelectedData = {
@@ -28,7 +28,7 @@ export class HomePageComponent {
 
   protected search = new FormControl()
 
-  protected selectedData = new BehaviorSubject({
+  protected selectedData = new BehaviorSubject<{ room: Room | null, storey: BusinessCenterStorey | null, businessCenter: BusinessCenter | null }>({
     room: null,
     storey: null,
     businessCenter: null
@@ -191,23 +191,43 @@ export class HomePageComponent {
     mapInstance.addLayer(room2)*/
   }
 
+  protected isSelectedTreeNode(node: any): boolean {
+    const selectedData = this.selectedData.value
+
+    debugger
+
+    if (selectedData.room !== null) {
+      return node.type === "ROOM" && node.id === selectedData.room.id
+    }
+
+    if (selectedData.storey !== null) {
+      return node.type === "STOREY" && node.id === selectedData.storey.id
+    }
+
+    if (selectedData.businessCenter !== null) {
+      return node.type === "BUSINESS_CENTER" && node.id === selectedData.businessCenter.id
+    }
+
+    return false
+  }
+
   protected onClickTreeNode(event: any) {
     switch (event.type) {
       case "BUSINESS_CENTER": {
         this.selectedData.next({
-          ...this.selectedData.value,
-          businessCenter: event.__origin
-        } as any)
+          businessCenter: event.__origin,
+          room: null,
+          storey: null
+        })
         break
       }
 
       case "STOREY": {
         this.selectedData.next({
-          ...this.selectedData.value,
           storey: event.__origin,
           businessCenter: event.parentBusinessCenter,
-        } as any)
-        this.selectedLevel.setValue(event.__origin.level)
+          room: null
+        })
         break
       }
 
@@ -215,9 +235,8 @@ export class HomePageComponent {
         this.selectedData.next({
           room: event.__origin,
           storey: event.parentStorey,
-          businessCenter: event.parentBusinessCenter,
-        } as any)
-        this.selectedLevel.setValue(event.parentStorey.level)
+          businessCenter: event.parentBusinessCenter
+        })
         break
       }
     }
