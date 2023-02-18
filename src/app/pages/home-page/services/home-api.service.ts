@@ -51,6 +51,20 @@ export class HomeApiService {
                 }),
                 "name": "Комната 1",
                 "leaseContractId": null
+              },
+              {
+                "id": 22,
+                "businessCenterStoreyId": 1,
+                "position": JSON.stringify({
+                  coords: [
+                    [ 365, 0 ],
+                    [ 365, 190 ],
+                    [ 663, 190 ],
+                    [ 663, 0 ]
+                  ]
+                }),
+                "name": "Комната 2",
+                "leaseContractId": null
               }
             ]
           },

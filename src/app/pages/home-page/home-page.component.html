@@ -1,47 +1,51 @@
 <urb-interactive-map
   class="leaflet-map"
   [options]="options"
-  (mapInstanceChanges)="onMapInstance($event)"
+  (mapInstanceChanges)="onCreateMap($event)"
 />
 
 <tui-island class="tree-island">
   <h3 class="tui-island__title">Дерево</h3>
 
-  <!--<div>
-    <tui-input [formControl]="search" [tuiTextfieldSize]="'s'">
-      Search
-      <input
-        tuiTextfield
-        type="text"
-      />
-    </tui-input>
-  </div>-->
-
   <tui-scrollbar class="tree-island-content" [tuiTreeController]="true">
-      <tui-tree *ngFor="let tree of trees | async" [value]="tree" [content]="treeNodeTemplate" [childrenHandler]="childrenHandler" />
+    <tui-tree *ngFor="let tree of businessCenterTrees | async"
+              [value]="tree"
+              [content]="treeNodeTemplate"
+              [childrenHandler]="childrenHandler" />
   </tui-scrollbar>
 </tui-island>
 
-<!--
-<div style="position: fixed; bottom: 10px; left: 10px; z-index: 9999">
-  <div
-    tuiGroup
-    class="group"
-    [collapsed]="true"
-  >
-    <tui-radio-block
-      *ngFor="let level of levels | async"
-      [formControl]="selectedLevel"
-      contentAlign="right"
-      size="s"
-      [item]="level"
-      [hideRadio]="true"
-    >
-      {{ level }}
-    </tui-radio-block>
+<ng-template
+  #treeNodeTemplate
+  let-value
+>
+  <div class="urb-tree-node"
+       (click)="onClickTreeNode(value)"
+       [class.is-selected]="value.isSelected | async">
+    {{ value.name }}
   </div>
+</ng-template>
+
+<!--
+<urb-interactive-map
+  class="leaflet-map"
+  [options]="options"
+  (mapInstanceChanges)="onMapInstance($event)"
+/>
+
+<div class="portal">
+  <tui-island>
+    <h3 class="tui-island__title">Комната 1</h3>
+  </tui-island>
 </div>
--->
+
+<tui-island class="tree-island">
+  <h3 class="tui-island__title">Дерево</h3>
+
+  <tui-scrollbar class="tree-island-content" [tuiTreeController]="true">
+    <tui-tree *ngFor="let tree of trees | async" [value]="tree" [content]="treeNodeTemplate" [childrenHandler]="childrenHandler" />
+  </tui-scrollbar>
+</tui-island>
 
 <ng-template
   #treeNodeTemplate
@@ -51,3 +55,4 @@
     {{ value.name }}
   </div>
 </ng-template>
+-->
