@@ -173,6 +173,10 @@ function createStoreyController(storey: BusinessCenterStorey,
       }
 
       target.addLayer(layerGroup)
+
+      if (target instanceof LeafletMap) {
+        target.fitBounds(map.svgContainer.bounding)
+      }
     },
     hide: () => {
       layerGroup.remove()
@@ -316,8 +320,17 @@ export class HomePageComponent {
           switch (result.type) {
             case "CENTER":
               break;
-            case "STOREY":
-              break;
+            case "STOREY": {
+              const businessCenter = businessCentersById.get(result.parentBusinessCenterId)
+
+              if (businessCenter) {
+                const storeyController = businessCenter.get(result.id)
+
+                storeyController?.show(leafletMap)
+              }
+
+              break
+            }
             case "ROOM": {
               const businessCenter = businessCentersById.get(result.parentBusinessCenterId)
 
@@ -326,7 +339,6 @@ export class HomePageComponent {
 
                 if (storeyController) {
                   storeyController.show(leafletMap)
-                  leafletMap.fitBounds(storeyController.getBounds())
 
                   const room = storeyController.getRoomController(result.id)
 
