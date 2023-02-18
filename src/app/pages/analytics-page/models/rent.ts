@@ -17,9 +17,12 @@ export interface Leak {
   expense?: number
   currentTemp?: number
   requiredTemp?: number
+  currentPowerConsumption?: number
+  requiredPowerConsumption?: number
 }
 
 export enum LeakType {
   negativeProfit = "NEGATIVE_PROFIT",
-  tooHotTemp = "TOO_HOT_TEMP"
+  tooHotTemp = "TOO_HOT_TEMP",
+  tooMuchPowerConsuming = "TOO_MUCH_POWER_CONSUMING"
 }

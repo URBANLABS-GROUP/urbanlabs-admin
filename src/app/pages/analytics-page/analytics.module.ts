@@ -3,16 +3,17 @@ import { CommonModule } from '@angular/common';
 import { AnalyticsPageComponent } from "./analytics-page.component";
 import { LeakListComponent } from "./components/leak-list/leak-list.component";
 import { AnalyticsRoutingModule } from "./analytics-routing.module";
-import { TuiAccordionModule, TuiIslandModule } from "@taiga-ui/kit";
+import { TuiAccordionModule, TuiIslandModule, TuiMarkerIconModule } from "@taiga-ui/kit";
 import { AnalyticsService } from "./services/analytics.service";
 import { RentMonthDebtComponent } from './components/rent-month-debt/rent-month-debt.component';
-import { TuiAxesModule, TuiBarChartModule, TuiPieChartModule } from "@taiga-ui/addon-charts";
-import { TuiHintModule } from "@taiga-ui/core";
+import { TuiAxesModule, TuiBarChartModule, TuiLineChartModule, TuiPieChartModule } from "@taiga-ui/addon-charts";
+import { TuiFormatNumberPipeModule, TuiHintModule } from "@taiga-ui/core";
 import { TuiMoneyModule } from "@taiga-ui/addon-commerce";
 import { RentMonthCountComponent } from './components/rent-month-count/rent-month-count.component';
 import { HttpClientModule } from "@angular/common/http";
 import { RentPeriodCountComponent } from './components/rent-period-count/rent-period-count.component';
 import { RentPeriodDebtComponent } from './components/rent-period-debt/rent-period-debt.component';
+import { TempChartComponent } from './components/temp-chart/temp-chart.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { RentPeriodDebtComponent } from './components/rent-period-debt/rent-peri
     RentMonthDebtComponent,
     RentMonthCountComponent,
     RentPeriodCountComponent,
-    RentPeriodDebtComponent
+    RentPeriodDebtComponent,
+    TempChartComponent
   ],
   imports: [
     CommonModule,
@@ -34,7 +36,10 @@ import { RentPeriodDebtComponent } from './components/rent-period-debt/rent-peri
     HttpClientModule,
     TuiAxesModule,
     TuiBarChartModule,
-    TuiIslandModule
+    TuiIslandModule,
+    TuiMarkerIconModule,
+    TuiLineChartModule,
+    TuiFormatNumberPipeModule
   ],
   providers: [
     AnalyticsService

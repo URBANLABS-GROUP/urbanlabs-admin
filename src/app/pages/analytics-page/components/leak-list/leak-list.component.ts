@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { Leak, LeakType, Rent } from "../../models/rent";
+import { Leak, LeakType } from "../../models/rent";
 
 @Component({
   selector: 'urb-leak-list',
@@ -10,16 +10,28 @@ import { Leak, LeakType, Rent } from "../../models/rent";
 export class LeakListComponent implements OnChanges {
   public leakType = LeakType
 
+  public leakTitleMap = {
+    [ LeakType.negativeProfit ]: 'Мы ушли в минус',
+    [ LeakType.tooHotTemp ]: 'Высокая температура',
+    [ LeakType.tooMuchPowerConsuming ]: 'Высокое энергопотребление',
+  }
+
+  public leakDescriptionMap = {
+    [ LeakType.negativeProfit ]: 'Сумма расходов перекрыла прибыль от аренды.',
+    [ LeakType.tooHotTemp ]: 'Среднее значение температуры слишком высокое.',
+    [ LeakType.tooMuchPowerConsuming ]: 'Среднее потребление электроэнергии слишком высокое.',
+  }
+
+  public currentLeaks: Leak[] = []
+
   @Input()
-  public leaks: Leak[] | null = [
-    { alertType: LeakType.negativeProfit, roomId: 15, income: 5000, expense: 10020 },
-    { alertType: LeakType.tooHotTemp, roomId: 9, currentTemp: 330, requiredTemp: 270 }
-  ]
+  public leaks: Leak[] | null = null
 
   ngOnChanges(changes: SimpleChanges): void {
-    const currentValue: Rent | null = changes[ 'leaks' ].currentValue
+    const currentValue: Leak[] | null = changes[ 'leaks' ].currentValue
 
     if (currentValue !== null) {
+      this.currentLeaks = currentValue.filter((leak) => this.leakTitleMap[ leak.alertType ])
     }
   }
 }

@@ -14,3 +14,33 @@
 .flex {
     display: flex;
 }
+
+.pie-legends {
+    display: flex;
+    justify-content: space-between;
+
+    font-weight: bold;
+}
+
+.pie-legends span:first-child {
+    color: var(--tui-chart-0);
+}
+
+.pie-legends span:last-child {
+    color: var(--tui-chart-1);
+}
+
+.chart-legends {
+    display: flex;
+    justify-content: space-between;
+
+    font-weight: bold;
+}
+
+.chart-legends span:first-child {
+    color: skyblue;
+}
+
+.chart-legends span:last-child {
+    color: violet;
+}

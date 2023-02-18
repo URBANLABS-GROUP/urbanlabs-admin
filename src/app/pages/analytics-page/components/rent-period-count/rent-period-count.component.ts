@@ -23,8 +23,6 @@ export class RentPeriodCountComponent implements OnChanges {
   public labelsX: string[] = []
   public labelsY: string[] = []
 
-  public appearance = 'onDark'
-
   readonly hint = ({ $implicit }: TuiContextWithImplicit<number>): string =>
     this.value
       .reduce((result, set) => `${ result }${ tuiFormatNumber(set[ $implicit ]) }\n`, '')

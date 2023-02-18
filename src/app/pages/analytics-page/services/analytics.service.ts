@@ -1,19 +1,29 @@
 import { Injectable } from '@angular/core';
-import { EMPTY, map, Observable, shareReplay } from "rxjs";
+import { map, Observable, shareReplay } from "rxjs";
 import { ConfigService } from "../../../global/services/config/config.service";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Rent } from "../models/rent";
+import { TempChart } from "../models/temp";
 
 @Injectable()
 export class AnalyticsService {
   private analyticsUrl: string = ''
 
   constructor(private configService: ConfigService, private httpClient: HttpClient) {
-    this.analyticsUrl = `${ this.configService.baseApiUrl }analytics/`
+    this.analyticsUrl = `${ this.configService.baseApiUrl }/analytics`
   }
 
-  public loadLeaks() {
-    return EMPTY
+  public loadTempChart(id: number, from: string, to: string) {
+    const params = new HttpParams({
+      fromObject: {
+        from,
+        to
+      }
+    })
+
+    return this.httpClient.get<TempChart[]>(`${ this.analyticsUrl }/plot/temp/${ id }`, { params }).pipe(
+      shareReplay(1)
+    )
   }
 
   public loadMonthRent(id: number, from: string, to: string): Observable<Rent> {
@@ -32,7 +42,7 @@ export class AnalyticsService {
     //   roomCount: 3
     // })
 
-    return this.httpClient.get<Rent[]>(`${ this.analyticsUrl }analyze/${ id }`, { params }).pipe(
+    return this.httpClient.get<Rent[]>(`${ this.analyticsUrl }/analyze/${ id }`, { params }).pipe(
       map((rents) => rents[ 0 ]),
       shareReplay(1)
     )
@@ -70,7 +80,7 @@ export class AnalyticsService {
     //   }
     // ])
 
-    return this.httpClient.get<Rent[]>(`${ this.analyticsUrl }analyze/${ id }`, { params }).pipe(
+    return this.httpClient.get<Rent[]>(`${ this.analyticsUrl }/analyze/${ id }`, { params }).pipe(
       shareReplay(1)
     )
   }
