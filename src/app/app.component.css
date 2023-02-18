@@ -37,7 +37,7 @@
   color: var(--tui-primary) !important;
 }
 
-.user-container a {
+.user-container a:not(.user-icon) {
   display: none;
 }
 

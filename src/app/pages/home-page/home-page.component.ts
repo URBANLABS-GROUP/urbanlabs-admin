@@ -1,14 +1,197 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
-import { FormControl } from "@angular/forms"
-import { CRS, LayerGroup, MapOptions, SVGOverlay } from "leaflet"
-import { BehaviorSubject, filter, firstValueFrom, map, Observable, take, tap } from "rxjs"
-import { BusinessCenter, BusinessCenterStorey, BusinessCenterStoreyMap, LeafletMap, Room } from "./models"
+import { BoundsLiteral, CRS, LayerGroup, MapOptions, Polygon, SVGOverlay } from "leaflet"
+import { BehaviorSubject, catchError, firstValueFrom, map, Observable, of, shareReplay, switchMap, take, tap, timer } from "rxjs"
+import { BusinessCenter, BusinessCenterStorey, BusinessCenterStoreyMap, LeafletMap, Room, RoomTelemetryInfo } from "./models"
 import { HomeApiService } from "./services/home-api.service"
 
-type SelectedData = {
-  room: number | null
-  storey: number | null
-  businessCenter: BusinessCenter | null
+type UrbBusinessCenterTreeNode = {
+  id: number
+  type: "CENTER"
+  name: string
+  isSelected: Observable<boolean>
+  children: UrbStoreyTreeNode[]
+}
+
+type UrbStoreyTreeNode = {
+  id: number
+  type: "STOREY"
+  parentBusinessCenterId: number
+  name: string
+  isSelected: Observable<boolean>
+  children: UrbRoomTreeNode[]
+}
+
+type UrbRoomTreeNode = {
+  id: number
+  type: "ROOM"
+  parentBusinessCenterId: number
+  parentStoreyId: number
+  name: string
+  isSelected: Observable<boolean>
+  children: never[]
+}
+
+type UrbTreeNode = UrbBusinessCenterTreeNode | UrbStoreyTreeNode | UrbRoomTreeNode
+
+type UrbTreeNodeSymbol = string
+
+function searchTreeNode(symbol: string, treeNode: UrbTreeNode): UrbTreeNode | null {
+  const [ type, id ] = symbol.split(":")
+
+  if (treeNode.type === type && treeNode.id === parseFloat(id)) {
+    return treeNode
+  }
+
+  for (const child of treeNode.children) {
+    const founded = searchTreeNode(symbol, child)
+
+    if (founded !== null) {
+      return founded
+    }
+  }
+
+  return null
+}
+
+function searchTreeNodeSeveral(symbol: string, treeNodes: UrbTreeNode[]): UrbTreeNode | null {
+  let result: UrbTreeNode | null = null
+
+  for (const treeNode of treeNodes) {
+    const searchResult = searchTreeNode(symbol, treeNode)
+
+    if (searchResult === null) {
+      continue
+    }
+
+    result = searchResult
+    break
+  }
+
+  return result
+}
+
+// --------------
+
+type StoreyController = {
+  show(target: LeafletMap | LayerGroup): void
+  hide(): void
+  getBounds(): BoundsLiteral
+  unselectAllRooms(): void
+  getRoomController(id: number): RoomController | null
+}
+
+type RoomController = {
+  id: number
+  addTo(target: LeafletMap | LayerGroup): void
+  select(): void
+  unselect(): void
+
+  onClick(listener: () => void): () => void
+}
+
+function createRoomController(room: Room): RoomController {
+  const polygon: Polygon = new Polygon(JSON.parse(room.position).coords, {
+    fillColor: "transparent",
+    stroke: false
+  })
+
+  let isSelected: boolean = false
+
+  const select = () => {
+    polygon.setStyle({
+      fillColor: "red"
+    })
+    isSelected = true
+  }
+
+  const unselect = () => {
+    polygon.setStyle({
+      fillColor: "transparent"
+    })
+    isSelected = false
+  }
+
+  polygon.addEventListener("mouseover", () => {
+    if (isSelected) {
+      return
+    }
+
+    polygon.setStyle({
+      fillColor: "red"
+    })
+  })
+
+  polygon.addEventListener("mouseout", () => {
+    if (isSelected) {
+      return
+    }
+
+    polygon.setStyle({
+      fillColor: "transparent"
+    })
+  })
+
+  polygon.bindTooltip(room.name, { className: "urb-tooltip", permanent: true, direction: "center" })
+
+  return {
+    id: room.id,
+    select: select,
+    unselect: unselect,
+    addTo: (target: LeafletMap | LayerGroup) => {
+      polygon.addTo(target)
+    },
+    onClick: (listener) => {
+      polygon.addEventListener("click", listener)
+      return () => polygon.removeEventListener("click", listener)
+    }
+  }
+}
+
+function createStoreyController(storey: BusinessCenterStorey,
+                                roomControllers: readonly RoomController[]): StoreyController {
+  const layerGroup = new LayerGroup()
+  const map: BusinessCenterStoreyMap = JSON.parse(storey.map)
+  const element = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+
+  for (const [ key, value ] of Object.entries(map.svgContainer.attributes)) {
+    element.setAttribute(key, value)
+  }
+
+  element.innerHTML = map.svgContainer.innerHtml
+  const storeyMap = new SVGOverlay(element, map.svgContainer.bounding)
+  layerGroup.addLayer(storeyMap)
+
+  for (const roomController of roomControllers) {
+    roomController.addTo(layerGroup)
+  }
+
+  return {
+    show: (target: LeafletMap | LayerGroup) => {
+      if (target.hasLayer(layerGroup)) {
+        return
+      }
+
+      target.addLayer(layerGroup)
+
+      if (target instanceof LeafletMap) {
+        target.fitBounds(map.svgContainer.bounding)
+      }
+    },
+    hide: () => {
+      layerGroup.remove()
+    },
+    unselectAllRooms: () => {
+      for (const roomController of roomControllers) {
+        roomController.unselect()
+      }
+    },
+    getBounds: () => {
+      return map.svgContainer.bounding
+    },
+    getRoomController: (id: number) => {
+      return roomControllers.find(r => r.id === id) ?? null
+    }
+  }
 }
 
 @Component({
@@ -21,224 +204,259 @@ export class HomePageComponent {
   public options: MapOptions = {
     attributionControl: false,
     crs: CRS.Simple,
-    minZoom: -5
+    minZoom: -2
   }
 
-  protected selectedLevel = new FormControl<number>(1, { nonNullable: true })
+  protected isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
 
-  protected search = new FormControl()
-
-  protected selectedData = new BehaviorSubject<{ room: Room | null, storey: BusinessCenterStorey | null, businessCenter: BusinessCenter | null }>({
-    room: null,
-    storey: null,
-    businessCenter: null
-  })
-
-  protected levels: Observable<number[]> = this.selectedData.pipe(
-    filter((data) => data.businessCenter !== null),
-    map((data) => {
-      return (data.businessCenter as any).storeys.map((s: any) => s.level)
-    })
+  private businessCenters: Observable<readonly BusinessCenter[]> = this.homeApiService.getBusinessCenters().pipe(
+    shareReplay(1)
   )
 
-  protected trees = this.homeApiService.getBusinessCenters().pipe(
-    map((businessCenters: readonly BusinessCenter[]) => {
-      return businessCenters.map((businessCenter) => {
+  private selectedTreeNode: BehaviorSubject<UrbTreeNodeSymbol | null> = new BehaviorSubject<UrbTreeNodeSymbol | null>(null)
+
+  protected businessCenterTrees: Observable<UrbTreeNode[]> = this.businessCenters.pipe(
+    map((centers: readonly BusinessCenter[]) => {
+      return centers.map((center) => {
+        const createIsSelected = (currentType: UrbTreeNode["type"], currentId: number) => {
+          return this.selectedTreeNode.pipe(
+            map((t: UrbTreeNodeSymbol | null) => {
+              if (t === null) {
+                return false
+              }
+
+              const [ type, id ] = t.split(":")
+
+              return currentType === type && currentId === parseFloat(id)
+            })
+          )
+        }
+
         return {
-          id: businessCenter.id,
-          type: "BUSINESS_CENTER",
-          name: businessCenter.name,
-          __origin: businessCenter,
-          children: businessCenter.storeys.map((storey) => {
+          id: center.id,
+          type: "CENTER",
+          name: center.name,
+          isSelected: createIsSelected("CENTER", center.id),
+          children: center.storeys.map((storey) => {
             return {
               id: storey.id,
               type: "STOREY",
               name: storey.name,
-              parentBusinessCenter: businessCenter,
-              __origin: storey,
+              isSelected: createIsSelected("STOREY", storey.id),
+              parentBusinessCenterId: center.id,
               children: storey.rooms.map((room) => {
                 return {
                   id: room.id,
                   type: "ROOM",
                   name: room.name,
-                  parentBusinessCenter: businessCenter,
-                  parentStorey: storey,
-                  __origin: room,
+                  isSelected: createIsSelected("ROOM", room.id),
+                  parentBusinessCenterId: center.id,
+                  parentStoreyId: storey.id,
                   children: []
                 }
               })
             }
           })
-        }
+        } as UrbBusinessCenterTreeNode
       })
+    }),
+    tap(() => this.isLoading.next(false)),
+    shareReplay(1)
+  )
+
+  protected selectedRoomTelemetryInfo: Observable<any> = this.selectedTreeNode.pipe(
+    switchMap((symbol: UrbTreeNodeSymbol | null) => {
+      if (symbol === null) {
+        return of(null)
+      }
+
+      const [ , id ] = symbol.split(":")
+
+      return timer(0, 15_000).pipe(
+        switchMap(() => this.homeApiService.getRoomTelemetryInfo(parseFloat(id)).pipe(
+          map((telemetryInfo: RoomTelemetryInfo) => {
+            const result: { key: string, value: string }[] = []
+
+            result.push({
+              key: "Рента",
+              value: telemetryInfo.rent === null
+                ? "Не известно"
+                : telemetryInfo.rent.toLocaleString("ru-RU") + " ₽"
+            })
+
+            result.push({
+              key: "Температура",
+              value: telemetryInfo.curTemp === null
+                ? "Не известно"
+                : (telemetryInfo.curTemp / 10).toLocaleString("ru-RU") + " °С"
+            })
+
+            result.push({
+              key: "Средняя температура",
+              value: telemetryInfo.averageCurTemp === null
+                ? "Не известно"
+                : (telemetryInfo.averageCurTemp / 10).toLocaleString("ru-RU") + " °С"
+            })
+
+            result.push({
+              key: "Потребление электричества",
+              value: telemetryInfo.curDayPowerConsumption === null
+                ? "Не известно"
+                : telemetryInfo.curDayPowerConsumption.toLocaleString("ru-RU") + " кв/ч"
+            })
+
+            result.push({
+              key: "Среднее потребление электричества",
+              value: telemetryInfo.averagePowerConsumption === null
+                ? "Не известно"
+                : telemetryInfo.averagePowerConsumption.toLocaleString("ru-RU") + " кв/ч"
+            })
+
+            result.push({
+              key: "Потребрение воды",
+              value: telemetryInfo.curDayWaterConsumption === null
+                ? "Не известно"
+                : telemetryInfo.curDayWaterConsumption.toLocaleString("ru-RU") + " куб м."
+            })
+
+            result.push({
+              key: "Среднее потребрение воды",
+              value: telemetryInfo.averageWaterConsumption === null
+                ? "Не известно"
+                : telemetryInfo.averageWaterConsumption.toLocaleString("ru-RU") + " куб м."
+            })
+
+            result.push({
+              key: "Траты",
+              value: telemetryInfo.expenses === null
+                ? "Не известно"
+                : telemetryInfo.expenses.toLocaleString("ru-RU") + " ₽"
+            })
+
+            result.push({
+              key: "Движение в комнате",
+              value: telemetryInfo.move === null
+                ? "Не известно"
+                : telemetryInfo.move ? "Да" : "Нет"
+            })
+
+            return {
+              roomName: "Привет",
+              result
+            }
+          }),
+          catchError(() => of(null))
+        ))
+      )
     })
   )
 
   constructor(private homeApiService: HomeApiService) {
-    this.homeApiService.getBusinessCenters().subscribe(console.debug)
+    this.selectedRoomTelemetryInfo.subscribe(console.debug)
+    this.businessCenterTrees.subscribe()
   }
 
-  protected childrenHandler(node: any): any[] {
-    return node.children ?? []
-  }
+  public async onCreateMap(leafletMap: LeafletMap): Promise<void> {
+    const businessCenters: readonly BusinessCenter[] = await firstValueFrom(this.businessCenters.pipe(take(1)))
 
-  protected async onMapInstance(mapInstance: LeafletMap) {
-    const businessCenters: readonly BusinessCenter[] = await firstValueFrom(this.homeApiService.getBusinessCenters().pipe(take(1)))
-
-    const businessCentersById = new Map()
+    const businessCentersById = new Map<number, Map<number, StoreyController>>()
     const masterLayerGroup = new LayerGroup()
-    mapInstance.addLayer(masterLayerGroup)
+    leafletMap.addLayer(masterLayerGroup)
 
     for (const businessCenter of businessCenters) {
-      const storeysById = new Map()
+      const storeysById = new Map<number, StoreyController>()
 
       for (const storey of businessCenter.storeys) {
         if (storey.map === null) {
           continue
         }
 
-        const layerGroup = new LayerGroup()
-        const map: BusinessCenterStoreyMap = JSON.parse(storey.map)
-        const element = document.createElementNS("http://www.w3.org/2000/svg", "svg")
-        for (const [ key, value ] of Object.entries(map.svgContainer.attributes)) {
-          element.setAttribute(key, value)
+        const roomControllers: RoomController[] = []
+
+        for (const room of storey.rooms) {
+          if (room.position === null) {
+            continue
+          }
+
+          const roomController = createRoomController(room)
+
+          roomController.onClick(() => {
+            this.onClickRoomPolygon("ROOM", room.id)
+          })
+
+          roomControllers.push(roomController)
         }
-        element.innerHTML = map.svgContainer.innerHtml
-        layerGroup.addLayer(new SVGOverlay(element, map.svgContainer.bounding))
-        storeysById.set(storey.id, {
-          layer: layerGroup,
-          bounding: map.svgContainer.bounding
-        })
+
+        const storeyController = createStoreyController(storey, roomControllers)
+
+        storeysById.set(storey.id, storeyController)
       }
 
       businessCentersById.set(businessCenter.id, storeysById)
     }
 
-    this.selectedData.pipe(
-      filter((data) => data.businessCenter !== null),
-      tap((data) => {
-        masterLayerGroup.eachLayer(s => s.remove())
-        const businessCenter = businessCentersById.get((data.businessCenter as any).id)
-        const storey = businessCenter.get((data.storey as any).id)
-        masterLayerGroup.addLayer(storey.layer)
-        mapInstance.fitBounds(storey.bounding)
-      })
+    this.selectedTreeNode.pipe(
+      switchMap((selectedTreeNodeSymbol: string | null) => this.businessCenterTrees.pipe(
+        tap((treeNodes) => {
+          if (selectedTreeNodeSymbol === null) {
+            return
+          }
+
+          const result = searchTreeNodeSeveral(selectedTreeNodeSymbol, treeNodes)
+
+          if (result === null) {
+            throw new Error(`TreeNode with symbol="${ selectedTreeNodeSymbol }" not found`)
+          }
+
+          switch (result.type) {
+            case "CENTER":
+              break;
+            case "STOREY": {
+              const businessCenter = businessCentersById.get(result.parentBusinessCenterId)
+
+              if (businessCenter) {
+                const storeyController = businessCenter.get(result.id)
+                businessCenter.forEach((storeyController) => storeyController.hide())
+
+                storeyController?.show(leafletMap)
+              }
+
+              break
+            }
+            case "ROOM": {
+              const businessCenter = businessCentersById.get(result.parentBusinessCenterId)
+
+              if (businessCenter) {
+                businessCenter.forEach((storeyController) => storeyController.hide())
+                const storeyController = businessCenter.get(result.parentStoreyId)
+
+                if (storeyController) {
+                  storeyController.show(leafletMap)
+
+                  const room = storeyController.getRoomController(result.id)
+
+                  if (room) {
+                    storeyController.unselectAllRooms()
+                    room.select()
+                  }
+                }
+              }
+            }
+          }
+        })
+      ))
     ).subscribe()
-
-    /*const floors = getSvgs()
-    const levelsLayerGroup = new LayerGroup()
-    mapInstance.addLayer(levelsLayerGroup)
-    let isini = false
-    this.selectedLevel.valueChanges
-      .pipe(
-        startWith(this.selectedLevel.value)
-      )
-      .subscribe((level) => {
-        levelsLayerGroup.eachLayer(l => l.remove())
-        const floor = Reflect.get(floors, String(level))
-        const layer = new SVGOverlay(floor.svgElement, floor.bounding)
-        layer.bringToBack()
-        levelsLayerGroup.addLayer(layer)
-        if (!isini) {
-          mapInstance.fitBounds(floor.bounding)
-          isini = true
-        }
-      })
-
-    const room = new Polygon([
-      [ 65, 0 ],
-      [ 65, 190 ],
-      [ 365, 190 ],
-      [ 365, 0 ]
-    ], {
-      fillColor: "transparent",
-      stroke: false
-    })
-
-    room.addEventListener("mouseover", () => {
-      room.setStyle({ fillColor: "red" })
-    })
-
-    room.addEventListener("mouseout", () => {
-      room.setStyle({ fillColor: "transparent" })
-    })
-
-    room.bindTooltip("room 1", { className: "urb-tooltip", permanent: true, direction: "center" })
-
-    const room2 = new Polygon([
-      [ 365, 0 ],
-      [ 365, 190 ],
-      [ 663, 190 ],
-      [ 663, 0 ]
-    ], {
-      fillColor: "transparent",
-      stroke: false
-    })
-
-    room2.addEventListener("mouseover", () => {
-      room2.setStyle({ fillColor: "red" })
-    })
-
-    room2.bindTooltip("room 2", { className: "urb-tooltip", permanent: true, direction: "center" })
-
-    room2.addEventListener("mouseout", () => {
-      room2.setStyle({ fillColor: "transparent" })
-    })
-
-    room.bringToFront()
-
-    mapInstance.addLayer(room)
-    mapInstance.addLayer(room2)*/
   }
 
-  protected isSelectedTreeNode(node: any): boolean {
-    const selectedData = this.selectedData.value
-
-    debugger
-
-    if (selectedData.room !== null) {
-      return node.type === "ROOM" && node.id === selectedData.room.id
-    }
-
-    if (selectedData.storey !== null) {
-      return node.type === "STOREY" && node.id === selectedData.storey.id
-    }
-
-    if (selectedData.businessCenter !== null) {
-      return node.type === "BUSINESS_CENTER" && node.id === selectedData.businessCenter.id
-    }
-
-    return false
+  protected onClickRoomPolygon(type: UrbTreeNode["type"], id: number): void {
+    this.selectedTreeNode.next(`${ type }:${ id }`)
   }
 
-  protected onClickTreeNode(event: any) {
-    switch (event.type) {
-      case "BUSINESS_CENTER": {
-        this.selectedData.next({
-          businessCenter: event.__origin,
-          room: null,
-          storey: null
-        })
-        break
-      }
+  protected onClickTreeNode(treeNode: UrbTreeNode): void {
+    this.selectedTreeNode.next(`${ treeNode.type }:${ treeNode.id }`)
+  }
 
-      case "STOREY": {
-        this.selectedData.next({
-          storey: event.__origin,
-          businessCenter: event.parentBusinessCenter,
-          room: null
-        })
-        break
-      }
-
-      case "ROOM": {
-        this.selectedData.next({
-          room: event.__origin,
-          storey: event.parentStorey,
-          businessCenter: event.parentBusinessCenter
-        })
-        break
-      }
-    }
+  protected childrenHandler(node: any): any[] {
+    return node.children ?? []
   }
 }

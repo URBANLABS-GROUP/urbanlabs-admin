@@ -1,50 +1,52 @@
-<urb-interactive-map [options]="options" style="width: 500px; height: 500px;"
-                     (mapInstanceChanges)="onMapInstance($event)" />
+<urb-interactive-map
+  class="leaflet-map"
+  [options]="options"
+  (mapInstanceChanges)="onCreateMap($event)"
+/>
+
+<div class="portal">
+  <tui-scrollbar>
+    <tui-island class="telemetry-info-island" *ngIf="selectedRoomTelemetryInfo | async as info">
+      <h3 class="tui-island__title">{{ info.roomName }}</h3>
+
+      <div class="telemetry-info-island-content tui-island__content">
+        <ul class="telemetry-list">
+          <li *ngFor="let keyValue of info.result">
+            <span class="key">{{ keyValue.key }}</span>
+            <span class="value">{{ keyValue.value }}</span>
+          </li>
+        </ul>
+        <!--<ng-container *ngFor="let keyValue of info.result">
+          <span class="key">{{ keyValue.key }}</span>
+          <span class="value">{{ keyValue.value }}</span>
+        </ng-container>-->
+      </div>
+    </tui-island>
+  </tui-scrollbar>
+</div>
 
 <tui-island class="tree-island">
-  <h3 class="tui-island__title">Дерево</h3>
+  <h3 class="tui-island__title">Комнаты</h3>
 
-  <!--<div>
-    <tui-input [formControl]="search" [tuiTextfieldSize]="'s'">
-      Search
-      <input
-        tuiTextfield
-        type="text"
-      />
-    </tui-input>
-  </div>-->
-
-  <tui-scrollbar class="tree-island-content" [tuiTreeController]="true">
-      <tui-tree *ngFor="let tree of trees | async" [value]="tree" [content]="treeNodeTemplate" [childrenHandler]="childrenHandler" />
-  </tui-scrollbar>
+  <tui-loader *ngIf="isLoading | async; else tree"></tui-loader>
 </tui-island>
 
-<!--
-<div style="position: fixed; bottom: 10px; left: 10px; z-index: 9999">
-  <div
-    tuiGroup
-    class="group"
-    [collapsed]="true"
-  >
-    <tui-radio-block
-      *ngFor="let level of levels | async"
-      [formControl]="selectedLevel"
-      contentAlign="right"
-      size="s"
-      [item]="level"
-      [hideRadio]="true"
-    >
-      {{ level }}
-    </tui-radio-block>
-  </div>
-</div>
--->
+<ng-template #tree>
+  <tui-scrollbar class="tree-island-content" [tuiTreeController]="true">
+    <tui-tree *ngFor="let tree of businessCenterTrees | async"
+              [value]="tree"
+              [content]="treeNodeTemplate"
+              [childrenHandler]="childrenHandler" />
+  </tui-scrollbar>
+</ng-template>
 
 <ng-template
   #treeNodeTemplate
   let-value
 >
-  <div (click)="onClickTreeNode(value)" class="urb-tree-node" [class.is-selected]="isSelectedTreeNode(value)">
+  <div class="urb-tree-node"
+       (click)="onClickTreeNode(value)"
+       [class.is-selected]="value.isSelected | async">
     {{ value.name }}
   </div>
 </ng-template>
