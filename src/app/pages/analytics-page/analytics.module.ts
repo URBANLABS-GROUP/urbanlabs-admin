@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AnalyticsPageComponent } from "./analytics-page.component";
 import { LeakListComponent } from "./components/leak-list/leak-list.component";
 import { AnalyticsRoutingModule } from "./analytics-routing.module";
-import { TuiAccordionModule, TuiIslandModule } from "@taiga-ui/kit";
+import { TuiAccordionModule, TuiIslandModule, TuiMarkerIconModule } from "@taiga-ui/kit";
 import { AnalyticsService } from "./services/analytics.service";
 import { RentMonthDebtComponent } from './components/rent-month-debt/rent-month-debt.component';
 import { TuiAxesModule, TuiBarChartModule, TuiPieChartModule } from "@taiga-ui/addon-charts";
@@ -34,7 +34,8 @@ import { RentPeriodDebtComponent } from './components/rent-period-debt/rent-peri
     HttpClientModule,
     TuiAxesModule,
     TuiBarChartModule,
-    TuiIslandModule
+    TuiIslandModule,
+    TuiMarkerIconModule
   ],
   providers: [
     AnalyticsService

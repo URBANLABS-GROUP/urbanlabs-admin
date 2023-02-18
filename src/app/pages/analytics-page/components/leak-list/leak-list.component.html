@@ -1,14 +1,32 @@
 <tui-accordion class="container" *ngIf="leaks !== null && leaks.length > 0">
-  <tui-accordion-item>
-    Нас ебут
+  <tui-accordion-item *ngFor="let leak of currentLeaks">
+    <div class="leak-title-container">
+      <tui-marker-icon
+          new
+          mode="error"
+          size="xxs"
+          src="tuiIconBellLarge"
+          class="tui-space_right-2"
+      ></tui-marker-icon>
+      <span>
+        {{ leakTitleMap[ leak.alertType ] }}
+      </span>
+    </div>
     <ng-template tuiAccordionItemContent>
-      Сэр, нам присунули и продолжают иметь
-    </ng-template>
-  </tui-accordion-item>
-  <tui-accordion-item>
-    У нас Африка
-    <ng-template tuiAccordionItemContent>
-      Объявились горячие тяночки и стало слишком жарко
+      {{ leakDescriptionMap[ leak.alertType ] }}
+
+      <span *ngIf="leak.alertType === leakType.tooHotTemp">
+        Текущая температура {{ leak.currentTemp }} С.
+      </span>
+
+      <span *ngIf="leak.alertType === leakType.negativeProfit">
+        Ушли в минус на {{ leak.expense }} ₽.
+      </span>
+
+      <span *ngIf="leak.alertType === leakType.tooMuchPowerConsuming">
+        Текущее потребление электроэнергии {{ leak.currentPowerConsumption }} Вт.
+      </span>
+
     </ng-template>
   </tui-accordion-item>
 </tui-accordion>
