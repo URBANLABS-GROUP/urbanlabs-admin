@@ -194,8 +194,6 @@ export class HomePageComponent {
   protected isSelectedTreeNode(node: any): boolean {
     const selectedData = this.selectedData.value
 
-    debugger
-
     if (selectedData.room !== null) {
       return node.type === "ROOM" && node.id === selectedData.room.id
     }
