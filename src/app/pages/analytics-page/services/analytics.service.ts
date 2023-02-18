@@ -9,7 +9,7 @@ export class AnalyticsService {
   private analyticsUrl: string = ''
 
   constructor(private configService: ConfigService, private httpClient: HttpClient) {
-    this.analyticsUrl = `${ this.configService.baseApiUrl }analytics/`
+    this.analyticsUrl = `${ this.configService.baseApiUrl }/analytics`
   }
 
   public loadLeaks() {
@@ -32,7 +32,7 @@ export class AnalyticsService {
     //   roomCount: 3
     // })
 
-    return this.httpClient.get<Rent[]>(`${ this.analyticsUrl }analyze/${ id }`, { params }).pipe(
+    return this.httpClient.get<Rent[]>(`${ this.analyticsUrl }/analyze/${ id }`, { params }).pipe(
       map((rents) => rents[ 0 ]),
       shareReplay(1)
     )
@@ -70,7 +70,7 @@ export class AnalyticsService {
     //   }
     // ])
 
-    return this.httpClient.get<Rent[]>(`${ this.analyticsUrl }analyze/${ id }`, { params }).pipe(
+    return this.httpClient.get<Rent[]>(`${ this.analyticsUrl }/analyze/${ id }`, { params }).pipe(
       shareReplay(1)
     )
   }
