@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { FormControl } from "@angular/forms"
 import { CRS, LayerGroup, MapOptions, SVGOverlay } from "leaflet"
-import { BehaviorSubject, combineLatest, filter, firstValueFrom, map, Observable, startWith, take, tap } from "rxjs"
+import { BehaviorSubject, filter, firstValueFrom, map, Observable, take, tap } from "rxjs"
 import { BusinessCenter, BusinessCenterStoreyMap, LeafletMap } from "./models"
 import { HomeApiService } from "./services/home-api.service"
 
@@ -114,17 +114,9 @@ export class HomePageComponent {
       businessCentersById.set(businessCenter.id, storeysById)
     }
 
-    // mapInstance.addLayer(businessCentersById.get(1).get(1).layer)
-    // mapInstance.fitBounds(businessCentersById.get(1).get(1).bounding)
-
-    combineLatest([
-      this.selectedLevel.valueChanges.pipe(
-        startWith(this.selectedLevel.value)
-      ),
-      this.selectedData
-    ]).pipe(
-      filter(([ , data ]) => data.businessCenter !== null),
-      tap(([ , data ]) => {
+    this.selectedData.pipe(
+      filter((data) => data.businessCenter !== null),
+      tap((data) => {
         masterLayerGroup.eachLayer(s => s.remove())
         const businessCenter = businessCentersById.get((data.businessCenter as any).id)
         const storey = businessCenter.get((data.storey as any).id)
