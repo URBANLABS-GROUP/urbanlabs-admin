@@ -65,6 +65,48 @@
   font-weight: bold;
 }
 
-.telemetry-list li:nth-child(odd) {
-  background-color: var(--tui-secondary-hover);
+.telemetry-info-island-content {
+  line-height: 1.1;
+}
+
+.tui-island__paragraph {
+  margin-bottom: 1rem;
+}
+
+@media screen and (max-width: 47.9625em) {
+  .leaflet-map {
+    margin-top: 0;
+  }
+
+  .tree-island {
+    width: 100%;
+    bottom: 0;
+    margin: 0;
+    top: unset;
+    height: 100%;
+    z-index: 9999;
+    transform: translateY(80%);
+  }
+
+  .tree-island.is-open {
+    transform: translateY(0);
+  }
+
+  .portal {
+    width: 100%;
+    bottom: 0;
+    margin: 0;
+    top: unset;
+    height: 100%;
+    z-index: 9999;
+    transform: translateY(72%);
+  }
+
+  .portal.is-open {
+    transform: translateY(0);
+  }
+
+  .telemetry-info-island {
+    height: 540px;
+  }
 }

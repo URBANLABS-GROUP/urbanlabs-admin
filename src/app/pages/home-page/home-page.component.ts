@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { BoundsLiteral, CRS, LayerGroup, MapOptions, Polygon, SVGOverlay } from "leaflet"
-import { BehaviorSubject, catchError, firstValueFrom, map, Observable, of, shareReplay, switchMap, take, tap, timer } from "rxjs"
+import { BehaviorSubject, catchError, firstValueFrom, map, Observable, of, shareReplay, switchMap, take, tap, timer, withLatestFrom } from "rxjs"
 import { BusinessCenter, BusinessCenterStorey, BusinessCenterStoreyMap, LeafletMap, Room, RoomTelemetryInfo } from "./models"
 import { HomeApiService } from "./services/home-api.service"
 
@@ -194,6 +194,10 @@ function createStoreyController(storey: BusinessCenterStorey,
   }
 }
 
+function isMobile(): boolean {
+  return window.matchMedia("screen and (max-width: 47.9625em)").matches
+}
+
 @Component({
   selector: "urb-home-page",
   templateUrl: "./home-page.component.html",
@@ -204,10 +208,15 @@ export class HomePageComponent {
   public options: MapOptions = {
     attributionControl: false,
     crs: CRS.Simple,
-    minZoom: -2
+    minZoom: -2,
+    zoomDelta: 0.5
   }
 
   protected isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
+
+  protected isTreeOpen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+
+  protected isPortalOpen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
   private businessCenters: Observable<readonly BusinessCenter[]> = this.homeApiService.getBusinessCenters().pipe(
     shareReplay(1)
@@ -264,85 +273,65 @@ export class HomePageComponent {
     shareReplay(1)
   )
 
-  protected selectedRoomTelemetryInfo: Observable<any> = this.selectedTreeNode.pipe(
-    switchMap((symbol: UrbTreeNodeSymbol | null) => {
+  protected selectedRoomTelemetryInfo: Observable<{ roomName: string, properties: Map<string, string> } | null> = this.selectedTreeNode.pipe(
+    withLatestFrom(this.businessCenterTrees),
+    switchMap(([ symbol, businessCenterTrees ]: [ UrbTreeNodeSymbol | null, UrbTreeNode[] ]) => {
       if (symbol === null) {
         return of(null)
       }
 
       const [ , id ] = symbol.split(":")
 
+      const treeNode: UrbTreeNode | null = searchTreeNodeSeveral(symbol, businessCenterTrees)
+
+      if (treeNode === null) {
+        throw new Error(`TreeNode with symbol="${ symbol }" not found`)
+      }
+
       return timer(0, 15_000).pipe(
         switchMap(() => this.homeApiService.getRoomTelemetryInfo(parseFloat(id)).pipe(
           map((telemetryInfo: RoomTelemetryInfo) => {
-            const result: { key: string, value: string }[] = []
+            const result: Map<string, string> = new Map()
 
-            result.push({
-              key: "Рента",
-              value: telemetryInfo.rent === null
-                ? "Не известно"
-                : telemetryInfo.rent.toLocaleString("ru-RU") + " ₽"
-            })
+            result.set("rent", telemetryInfo.rent === null
+              ? "Не известно"
+              : telemetryInfo.rent.toLocaleString("ru-RU") + " ₽")
 
-            result.push({
-              key: "Температура",
-              value: telemetryInfo.curTemp === null
-                ? "Не известно"
-                : (telemetryInfo.curTemp / 10).toLocaleString("ru-RU") + " °С"
-            })
+            result.set("curTemp", telemetryInfo.curTemp === null
+              ? "Не известно"
+              : (telemetryInfo.curTemp / 10).toLocaleString("ru-RU") + " °С")
 
-            result.push({
-              key: "Средняя температура",
-              value: telemetryInfo.averageCurTemp === null
-                ? "Не известно"
-                : (telemetryInfo.averageCurTemp / 10).toLocaleString("ru-RU") + " °С"
-            })
+            result.set("averageCurTemp", telemetryInfo.averageCurTemp === null
+              ? "Не известно"
+              : (telemetryInfo.averageCurTemp / 10).toLocaleString("ru-RU") + " °С")
 
-            result.push({
-              key: "Потребление электричества",
-              value: telemetryInfo.curDayPowerConsumption === null
-                ? "Не известно"
-                : telemetryInfo.curDayPowerConsumption.toLocaleString("ru-RU") + " кв/ч"
-            })
+            result.set("curDayPowerConsumption", telemetryInfo.curDayPowerConsumption === null
+              ? "Не известно"
+              : telemetryInfo.curDayPowerConsumption.toLocaleString("ru-RU") + " кВт*ч")
 
-            result.push({
-              key: "Среднее потребление электричества",
-              value: telemetryInfo.averagePowerConsumption === null
-                ? "Не известно"
-                : telemetryInfo.averagePowerConsumption.toLocaleString("ru-RU") + " кв/ч"
-            })
+            result.set("averagePowerConsumption", telemetryInfo.averagePowerConsumption === null
+              ? "Не известно"
+              : telemetryInfo.averagePowerConsumption.toLocaleString("ru-RU") + " кВт*ч")
 
-            result.push({
-              key: "Потребрение воды",
-              value: telemetryInfo.curDayWaterConsumption === null
-                ? "Не известно"
-                : telemetryInfo.curDayWaterConsumption.toLocaleString("ru-RU") + " куб м."
-            })
+            result.set("curDayWaterConsumption", telemetryInfo.curDayWaterConsumption === null
+              ? "Не известно"
+              : telemetryInfo.curDayWaterConsumption.toLocaleString("ru-RU") + " м3")
 
-            result.push({
-              key: "Среднее потребрение воды",
-              value: telemetryInfo.averageWaterConsumption === null
-                ? "Не известно"
-                : telemetryInfo.averageWaterConsumption.toLocaleString("ru-RU") + " куб м."
-            })
+            result.set("averageWaterConsumption", telemetryInfo.averageWaterConsumption === null
+              ? "Не известно"
+              : telemetryInfo.averageWaterConsumption.toLocaleString("ru-RU") + " м3")
 
-            result.push({
-              key: "Траты",
-              value: telemetryInfo.expenses === null
-                ? "Не известно"
-                : telemetryInfo.expenses.toLocaleString("ru-RU") + " ₽"
-            })
+            result.set("expenses", telemetryInfo.expenses === null
+              ? "Не известно"
+              : telemetryInfo.expenses.toLocaleString("ru-RU") + " ₽")
 
-            result.push({
-              key: "Движение в комнате",
-              value: telemetryInfo.move === null
-                ? "Не известно"
-                : telemetryInfo.move ? "Да" : "Нет"
-            })
+            result.set("move", telemetryInfo.move === null
+              ? "Не известно"
+              : telemetryInfo.move ? "Да" : "Нет")
 
             return {
-              roomName: "Привет",
-              result
+              roomName: treeNode.name,
+              properties: result
             }
           }),
           catchError(() => of(null))
@@ -410,7 +399,7 @@ export class HomePageComponent {
 
           switch (result.type) {
             case "CENTER":
-              break;
+              break
             case "STOREY": {
               const businessCenter = businessCentersById.get(result.parentBusinessCenterId)
 
@@ -453,10 +442,30 @@ export class HomePageComponent {
   }
 
   protected onClickTreeNode(treeNode: UrbTreeNode): void {
+    if (isMobile()) {
+      this.isTreeOpen.next(false)
+    }
+
     this.selectedTreeNode.next(`${ treeNode.type }:${ treeNode.id }`)
   }
 
   protected childrenHandler(node: any): any[] {
     return node.children ?? []
+  }
+
+  protected onClickTreeHeader(): void {
+    if (!isMobile()) {
+      return
+    }
+
+    this.isTreeOpen.next(!this.isTreeOpen.value)
+  }
+
+  public onClickPortal() {
+    if (!isMobile()) {
+      return
+    }
+
+    this.isPortalOpen.next(!this.isPortalOpen.value)
   }
 }
