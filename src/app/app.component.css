@@ -37,11 +37,11 @@
   color: var(--tui-primary) !important;
 }
 
-.user-container a:not(.user-icon) {
+.user-container .mobile-link {
   display: none;
 }
 
-@media screen and (max-width: 47.9625em) {
+@media (max-width: 767px) {
   .header {
     top: unset;
     bottom: 0;
@@ -63,7 +63,7 @@
     justify-content: space-between;
   }
 
-  .user-container a {
+  .user-container .mobile-link {
     display: block;
   }
 }

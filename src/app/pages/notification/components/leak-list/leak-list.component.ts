@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { Leak, LeakType } from "../../models/rent";
+import { Leak, LeakType } from "../../../analytics-page/models/rent";
 
 @Component({
   selector: 'urb-leak-list',

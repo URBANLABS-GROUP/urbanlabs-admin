@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnalyticsPageComponent } from "./analytics-page.component";
-import { LeakListComponent } from "./components/leak-list/leak-list.component";
 import { AnalyticsRoutingModule } from "./analytics-routing.module";
 import { TuiAccordionModule, TuiIslandModule, TuiMarkerIconModule } from "@taiga-ui/kit";
 import { AnalyticsService } from "./services/analytics.service";
@@ -20,7 +19,6 @@ import { PowerChartComponent } from './components/power-chart/power-chart.compon
 @NgModule({
   declarations: [
     AnalyticsPageComponent,
-    LeakListComponent,
     RentMonthDebtComponent,
     RentMonthCountComponent,
     RentPeriodCountComponent,

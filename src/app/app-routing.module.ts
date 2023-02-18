@@ -10,6 +10,10 @@ const routes: Routes = [
   {
     path: "analytics",
     loadChildren: () => import('./pages/analytics-page/analytics.module').then((module) => module.AnalyticsModule)
+  },
+  {
+    path: "notification",
+    loadChildren: () => import('./pages/notification/notification.module').then((module) => module.NotificationModule)
   }
 ]
 
