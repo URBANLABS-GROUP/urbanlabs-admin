@@ -2,7 +2,6 @@ import { HttpClient } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import { map, Observable } from "rxjs"
 import { ConfigService } from "../../../global/services/config/config.service"
-import { sortAlphabet } from "../lib"
 import { BusinessCenter, RoomTelemetryInfo, StoreyTelemetryInfo } from "../models"
 
 @Injectable({
@@ -37,7 +36,6 @@ export class HomeApiService {
                     })
                 }
               })
-              .sort((a, b) => sortAlphabet(a.name, b.name))
           }
         })
       })
