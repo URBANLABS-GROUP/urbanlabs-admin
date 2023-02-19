@@ -371,7 +371,7 @@ export class HomePageComponent {
 
       const [ type, id ] = symbol.split(":") as [ UrbTreeNode["type"], string ]
 
-      if (type === "CENTER") {
+      if (type === "CENTER" || type === "ROOM") {
         return of(null)
       }
 
@@ -500,6 +500,7 @@ export class HomePageComponent {
                 const storeyController = businessCenter.get(result.id)
                 businessCenter.forEach((storeyController) => storeyController.hide())
 
+                storeyController?.unselectAllRooms()
                 storeyController?.show(leafletMap)
               }
 
