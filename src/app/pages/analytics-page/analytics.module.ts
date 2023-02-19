@@ -17,6 +17,7 @@ import { PowerChartComponent } from './components/power-chart/power-chart.compon
 import { PowerExpensesComponent } from './components/power-expenses/power-expenses.component';
 import { RentIncomeComponent } from './components/rent-income/rent-income.component';
 import { BalanceComponent } from './components/balance/balance.component';
+import { CheckExpensesComponent } from './components/check-expenses/check-expenses.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { BalanceComponent } from './components/balance/balance.component';
     PowerChartComponent,
     PowerExpensesComponent,
     RentIncomeComponent,
-    BalanceComponent
+    BalanceComponent,
+    CheckExpensesComponent
   ],
   imports: [
     CommonModule,
