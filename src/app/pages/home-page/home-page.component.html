@@ -12,6 +12,16 @@
         <h3 class="tui-island__title">{{ selectedRoomName | async }}</h3>
       </header>
 
+      <button
+        tuiIconButton
+        (click)="onClickClosePropertiesCard()"
+        class="island-close-button"
+        type="button"
+        size="s"
+        icon="tuiIconCloseLarge"
+        appearance="icon"
+      ></button>
+
       <tui-loader *ngIf="selectedRoomTelemetryInfoIsLoading | async" />
 
       <div class="telemetry-info-island-content" *ngIf="selectedRoomTelemetryInfo | async as info">
@@ -95,11 +105,21 @@
       </div>
     </tui-island>
 
-    <tui-island class="telemetry-info-island" *ngIf="isShowStoreyProperties | async">
+    <tui-island *ngIf="isShowStoreyProperties | async" class="telemetry-info-island">
       <header (click)="onClickPortal()" class="telemetry-info-island-header">
         <p class="tui-island__category">Этаж</p>
         <h3 class="tui-island__title">{{ selectedStoreyName | async }}</h3>
       </header>
+
+      <button
+        tuiIconButton
+        (click)="onClickClosePropertiesCard()"
+        class="island-close-button"
+        type="button"
+        size="s"
+        icon="tuiIconCloseLarge"
+        appearance="icon"
+      ></button>
 
       <tui-loader *ngIf="selectedStoreyInfoIsLoading | async" />
 

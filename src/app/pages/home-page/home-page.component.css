@@ -73,6 +73,17 @@
   margin-bottom: 1rem;
 }
 
+.portal ::ng-deep tui-island.tui-island {
+  position: relative;
+}
+
+button.island-close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px;
+}
+
 @media screen and (max-width: 47.9625em) {
   .leaflet-map {
     margin-top: 0;

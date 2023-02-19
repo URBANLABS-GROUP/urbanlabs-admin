@@ -536,6 +536,11 @@ export class HomePageComponent {
       switchMap((selectedTreeNodeSymbol: string | null) => this.businessCenterTrees.pipe(
         tap((treeNodes) => {
           if (selectedTreeNodeSymbol === null) {
+            businessCentersById.forEach((businessCenter) => {
+              businessCenter.forEach((storeyController) => {
+                storeyController.unselectAllRooms()
+              })
+            })
             return
           }
 
@@ -616,5 +621,9 @@ export class HomePageComponent {
     }
 
     this.isPortalOpen.next(!this.isPortalOpen.value)
+  }
+
+  protected onClickClosePropertiesCard(): void {
+    this.selectedTreeNode.next(null)
   }
 }
