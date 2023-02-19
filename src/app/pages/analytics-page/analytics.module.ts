@@ -18,6 +18,7 @@ import { PowerExpensesComponent } from './components/power-expenses/power-expens
 import { RentIncomeComponent } from './components/rent-income/rent-income.component';
 import { BalanceComponent } from './components/balance/balance.component';
 import { CheckExpensesComponent } from './components/check-expenses/check-expenses.component';
+import { RequestExpensesComponent } from './components/request-expenses/request-expenses.component';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { CheckExpensesComponent } from './components/check-expenses/check-expens
     PowerExpensesComponent,
     RentIncomeComponent,
     BalanceComponent,
-    CheckExpensesComponent
+    CheckExpensesComponent,
+    RequestExpensesComponent
   ],
   imports: [
     CommonModule,
