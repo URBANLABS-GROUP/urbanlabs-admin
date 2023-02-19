@@ -1,16 +1,19 @@
-<tui-island *ngIf="value.length > 0">
-  <p class="tui-island__category">аренда</p>
-  <h3 class="tui-island__title">Арендовано за месяц</h3>
-  <tui-pie-chart
-      class="pie-chart"
-      [value]="value"
-      [tuiHintContent]="content"
-  ></tui-pie-chart>
-  <div class="pie-legends">
-    <span>Арендовано</span>
-    <span>Свободно</span>
-  </div>
-</tui-island>
+<tui-loader [overlay]="true" [showLoader]="isLoading">
+  <tui-island>
+    <p class="tui-island__category">аренда</p>
+    <h3 class="tui-island__title">Арендовано за месяц</h3>
+    <tui-pie-chart
+        class="pie-chart"
+        [value]="value"
+        [tuiHintContent]="content"
+    ></tui-pie-chart>
+    <div class="pie-legends">
+      <span>Арендовано</span>
+      <span>Свободно</span>
+    </div>
+  </tui-island>
+</tui-loader>
+
 
 <ng-template
     #content

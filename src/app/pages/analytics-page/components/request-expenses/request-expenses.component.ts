@@ -11,6 +11,7 @@ export class RequestExpensesComponent implements OnChanges {
   public total = 0
 
   public startDate = ''
+  public isLoading = true
 
   @Input()
   public expenses: Rent[] | null = null
@@ -24,6 +25,8 @@ export class RequestExpensesComponent implements OnChanges {
       )
 
       this.startDate = new Date(currentValue[ 0 ].date).toLocaleDateString()
+
+      this.isLoading = false
     }
   }
 }

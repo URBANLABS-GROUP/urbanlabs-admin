@@ -12,6 +12,8 @@ export class RentIncomeComponent implements OnChanges {
 
   public startDate = ''
 
+  public isLoading = true
+
   @Input()
   public income: Rent[] | null = null
 
@@ -24,6 +26,8 @@ export class RentIncomeComponent implements OnChanges {
       )
 
       this.startDate = new Date(currentValue[ 0 ].date).toLocaleDateString()
+
+      this.isLoading = false
     }
   }
 }

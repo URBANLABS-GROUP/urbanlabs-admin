@@ -9,8 +9,8 @@ import { Rent } from "../../models/rent";
 })
 export class BalanceComponent implements OnChanges {
   public total = 0
-
   public startDate = ''
+  public isLoading = true
 
   @Input()
   public rents: Rent[] | null = null
@@ -24,6 +24,7 @@ export class BalanceComponent implements OnChanges {
       )
 
       this.startDate = new Date(currentValue[ 0 ].date).toLocaleDateString()
+      this.isLoading = false
     }
   }
 }

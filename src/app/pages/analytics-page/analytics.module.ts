@@ -6,7 +6,7 @@ import { TuiAccordionModule, TuiIslandModule, TuiMarkerIconModule } from "@taiga
 import { AnalyticsService } from "./services/analytics.service";
 import { RentMonthDebtComponent } from './components/rent-month-debt/rent-month-debt.component';
 import { TuiAxesModule, TuiBarChartModule, TuiLineChartModule, TuiPieChartModule } from "@taiga-ui/addon-charts";
-import { TuiFormatNumberPipeModule, TuiHintModule } from "@taiga-ui/core";
+import { TuiFormatNumberPipeModule, TuiHintModule, TuiLoaderModule } from "@taiga-ui/core";
 import { TuiMoneyModule } from "@taiga-ui/addon-commerce";
 import { RentMonthCountComponent } from './components/rent-month-count/rent-month-count.component';
 import { HttpClientModule } from "@angular/common/http";
@@ -49,7 +49,8 @@ import { RequestExpensesComponent } from './components/request-expenses/request-
     TuiIslandModule,
     TuiMarkerIconModule,
     TuiLineChartModule,
-    TuiFormatNumberPipeModule
+    TuiFormatNumberPipeModule,
+    TuiLoaderModule
   ],
   providers: [
     AnalyticsService

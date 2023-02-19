@@ -13,12 +13,15 @@ export class RentMonthDebtComponent implements OnChanges {
 
   readonly labels = [ 'Оплачено', 'Задолженность' ]
   public value: number[] = []
+  public isLoading = true
 
   ngOnChanges(changes: SimpleChanges): void {
     const currentValue: Rent | null = changes[ 'debt' ].currentValue
 
     if (currentValue !== null) {
       this.value = [ currentValue.realIncome, currentValue.expectedIncome - currentValue.realIncome ]
+
+      this.isLoading = false
     }
   }
 }

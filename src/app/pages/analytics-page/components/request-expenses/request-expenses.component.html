@@ -1,12 +1,15 @@
-<tui-island>
-  <p class="tui-island__category">заявки</p>
-  <h3 class="tui-island__title">Траты c {{ startDate }}</h3>
-  <b class="money-large">
-    <tui-money
-        class="money-large"
-        [colored]="true"
-        [value]="total"
-    ></tui-money>
-  </b>
+<tui-loader [overlay]="true" [showLoader]="isLoading">
+  <tui-island>
+    <p class="tui-island__category">заявки</p>
+    <h3 class="tui-island__title">Траты c {{ startDate }}</h3>
+    <b class="money-large">
+      <tui-money
+          class="money-large"
+          [colored]="true"
+          [value]="total"
+      ></tui-money>
+    </b>
 
-</tui-island>
+  </tui-island>
+</tui-loader>
+

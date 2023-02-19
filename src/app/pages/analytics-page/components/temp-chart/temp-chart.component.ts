@@ -15,6 +15,7 @@ export class TempChartComponent implements OnChanges {
   public startY = 0
 
   public rooms: string[] = []
+  public isLoading = true
 
   @Input()
   public points: TempChart[] | null = null
@@ -54,6 +55,8 @@ export class TempChartComponent implements OnChanges {
         const words = room.split(' ')
         return words[ 1 ]
       })
+
+      this.isLoading = false
     }
   }
 }

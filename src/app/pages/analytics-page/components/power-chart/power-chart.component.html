@@ -1,25 +1,28 @@
-<tui-island *ngIf="values.length > 0">
-  <p class="tui-island__category">электричество</p>
-  <h3 class="tui-island__title">Среднее за месяц</h3>
-  <tui-axes
-      class="axes"
-      [verticalLines]="4"
-      [horizontalLines]="2"
-      [tuiLineChartHint]="hint"
+<tui-loader [overlay]="true" [showLoader]="isLoading">
+  <tui-island>
+    <p class="tui-island__category">электричество</p>
+    <h3 class="tui-island__title">Среднее за месяц</h3>
+    <tui-axes
+        class="axes"
+        [verticalLines]="4"
+        [horizontalLines]="2"
+        [tuiLineChartHint]="hint"
 
-  >
-    <tui-line-chart
-        *ngFor="let value of values"
-        class="chart"
-        [x]="0"
-        [y]="startY"
-        [width]="32"
-        [height]="height"
-        [value]="value"
-    ></tui-line-chart>
-  </tui-axes>
-  <div class="rooms">
-    Помещения:
-    <span *ngFor="let room of rooms" class="legend">{{ room }}</span>
-  </div>
-</tui-island>
+    >
+      <tui-line-chart
+          *ngFor="let value of values"
+          class="chart"
+          [x]="0"
+          [y]="startY"
+          [width]="32"
+          [height]="height"
+          [value]="value"
+      ></tui-line-chart>
+    </tui-axes>
+    <div class="rooms">
+      Помещения:
+      <span *ngFor="let room of rooms" class="legend">{{ room }}</span>
+    </div>
+  </tui-island>
+</tui-loader>
+

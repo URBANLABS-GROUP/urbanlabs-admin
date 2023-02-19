@@ -13,12 +13,15 @@ export class RentMonthCountComponent implements OnChanges {
 
   readonly labels = [ 'Арендовано', 'Свободно' ]
   public value: number[] = []
+  public isLoading = true
 
   ngOnChanges(changes: SimpleChanges): void {
     const currentValue: Rent | null = changes[ 'rent' ].currentValue
 
     if (currentValue !== null) {
       this.value = [ currentValue.rentCount, currentValue.roomCount - currentValue.rentCount ]
+
+      this.isLoading = false
     }
   }
 }

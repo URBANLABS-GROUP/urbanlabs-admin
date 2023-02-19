@@ -16,6 +16,8 @@ export class PowerChartComponent implements OnChanges {
 
   public rooms: string[] = []
 
+  public isLoading = true
+
   @Input()
   public points: PowerChart[] | null = null
 
@@ -42,6 +44,8 @@ export class PowerChartComponent implements OnChanges {
         const words = room.split(' ')
         return words[ 1 ]
       })
+
+      this.isLoading = false
     }
   }
 }

@@ -22,6 +22,7 @@ export class RentPeriodDebtComponent implements OnChanges {
 
   public labelsX: string[] = []
   public labelsY: string[] = []
+  public isLoading = true
 
   readonly hint = ({ $implicit }: TuiContextWithImplicit<number>): string =>
     this.value
@@ -58,6 +59,7 @@ export class RentPeriodDebtComponent implements OnChanges {
 
     if (currentValue !== null) {
       this.setChartData(currentValue)
+      this.isLoading = false
     }
   }
 }
