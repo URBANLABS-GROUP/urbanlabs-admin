@@ -386,6 +386,10 @@ export class HomePageComponent {
           map((telemetryInfo: StoreyTelemetryInfo) => {
             const result: Map<string, string> = new Map()
 
+            result.set("area", telemetryInfo.area === null
+              ? "Не известно"
+              : telemetryInfo.area.toLocaleString("ru-RU") + " м2")
+
             result.set("rent", telemetryInfo.rent === null
               ? "Не известно"
               : telemetryInfo.rent.toLocaleString("ru-RU") + " ₽")

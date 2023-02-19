@@ -47,6 +47,7 @@ export type StoreyTelemetryInfo = {
   averageWaterConsumption: number | null
   rent: number | null
   expenses: number | null
+  area: number | null
 }
 
 export type BusinessCenterStoreyMap = {
