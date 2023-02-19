@@ -4,6 +4,9 @@ export type Room = {
   position: string
   name: string
   leaseContractId: string
+  requiredTemp: number
+  allowablePowerConsumption: number
+  area: number
 }
 
 export type BusinessCenterStorey = {
@@ -20,6 +23,7 @@ export type BusinessCenter = {
   name: string
   lessorId: number
   storeys: readonly BusinessCenterStorey[]
+  wattPrice: number
 }
 
 export type RoomTelemetryInfo = {

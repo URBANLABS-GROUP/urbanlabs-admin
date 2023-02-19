@@ -16,6 +16,10 @@
         <div class="tui-island__paragraph">
           <ul class="telemetry-list">
             <li>
+              <span class="key">Площадь</span>
+              <span class="value">{{ info.properties.get("area") }}</span>
+            </li>
+            <li>
               <span class="key">Расходы</span>
               <span class="value">{{ info.properties.get("expenses") }}</span>
             </li>
@@ -32,6 +36,10 @@
 
           <ul class="telemetry-list" style="padding-left: 1rem">
             <li>
+              <span class="key">Норма</span>
+              <span class="value">{{ info.properties.get("requiredTemp") }}</span>
+            </li>
+            <li>
               <span class="key">Текущая</span>
               <span class="value">{{ info.properties.get("curTemp") }}</span>
             </li>
@@ -47,6 +55,10 @@
           <h4 style="margin: 0;">Электропотребление</h4>
 
           <ul class="telemetry-list" style="padding-left: 1rem">
+            <li>
+              <span class="key">Норма</span>
+              <span class="value">{{ info.properties.get("allowablePowerConsumption") }}</span>
+            </li>
             <li>
               <span class="key">Текущая</span>
               <span class="value">{{ info.properties.get("curDayPowerConsumption") }}</span>
