@@ -201,6 +201,10 @@ function isMobile(): boolean {
   return window.matchMedia("screen and (max-width: 47.9625em)").matches
 }
 
+type RealtimeInfoData = {
+  properties: Map<string, string>
+}
+
 @Component({
   selector: "urb-home-page",
   templateUrl: "./home-page.component.html",
@@ -279,7 +283,33 @@ export class HomePageComponent {
     shareReplay(1)
   )
 
-  protected selectedRoomTelemetryInfo: Observable<{ roomName: string, properties: Map<string, string> } | null> = this.selectedTreeNode.pipe(
+  protected selectedRoomTelemetryInfoIsLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
+
+  protected selectedRoomName: Observable<string | null> = this.selectedTreeNode.pipe(
+    switchMap((symbol: string | null) => {
+      if (symbol === null) {
+        return of(null)
+      }
+
+      return this.businessCenterTrees.pipe(
+        map((businessCenterTrees: UrbTreeNode[]) => {
+          const treeNode: UrbRoomTreeNode | null = searchTreeNodeSeveral(symbol, businessCenterTrees) as UrbRoomTreeNode | null
+
+          if (treeNode === null) {
+            throw new Error(`TreeNode with symbol="${ symbol }" not found`)
+          }
+
+          return treeNode.name
+        })
+      )
+    })
+  )
+
+  protected isShowRoomProperties = this.selectedTreeNode.pipe(
+    map((symbol) => symbol !== null && symbol.startsWith("ROOM:"))
+  )
+
+  protected selectedRoomTelemetryInfo: Observable<Map<string, string> | null> = this.selectedTreeNode.pipe(
     withLatestFrom(this.businessCenterTrees),
     switchMap(([ symbol, businessCenterTrees ]: [ UrbTreeNodeSymbol | null, UrbTreeNode[] ]) => {
       if (symbol === null) {
@@ -351,18 +381,42 @@ export class HomePageComponent {
               ? "Не известно"
               : telemetryInfo.move ? "Да" : "Нет")
 
-            return {
-              roomName: treeNode.name,
-              properties: result
-            }
+            return result
           }),
+          tap(() => this.selectedRoomTelemetryInfoIsLoading.next(false)),
           catchError(() => of(null))
         ))
       )
     })
   )
 
-  protected selectedStoreyTelemetryInfo: Observable<{ name: string, properties: Map<string, string> } | null> = this.selectedTreeNode.pipe(
+  protected selectedStoreyInfoIsLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
+
+  protected selectedStoreyName = this.selectedTreeNode.pipe(
+    switchMap((symbol: string | null) => {
+      if (symbol === null) {
+        return of(null)
+      }
+
+      return this.businessCenterTrees.pipe(
+        map((businessCenterTrees: UrbTreeNode[]) => {
+          const treeNode: UrbStoreyTreeNode | null = searchTreeNodeSeveral(symbol, businessCenterTrees) as UrbStoreyTreeNode | null
+
+          if (treeNode === null) {
+            throw new Error(`TreeNode with symbol="${ symbol }" not found`)
+          }
+
+          return treeNode.name
+        })
+      )
+    })
+  )
+
+  protected isShowStoreyProperties = this.selectedTreeNode.pipe(
+    map((symbol) => symbol !== null && symbol.startsWith("STOREY:"))
+  )
+
+  protected selectedStoreyTelemetryInfo: Observable<RealtimeInfoData | null> = this.selectedTreeNode.pipe(
     withLatestFrom(this.businessCenterTrees),
     switchMap(([ symbol, businessCenterTrees ]: [ UrbTreeNodeSymbol | null, UrbTreeNode[] ]) => {
       if (symbol === null) {
@@ -427,6 +481,7 @@ export class HomePageComponent {
               properties: result
             }
           }),
+          tap(() => this.selectedStoreyInfoIsLoading.next(false)),
           catchError(() => of(null))
         ))
       )

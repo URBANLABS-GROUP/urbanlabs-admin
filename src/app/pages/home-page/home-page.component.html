@@ -6,169 +6,177 @@
 
 <div class="portal" [class.is-open]="isPortalOpen | async">
   <tui-scrollbar>
-    <tui-island class="telemetry-info-island" *ngIf="selectedRoomTelemetryInfo | async as info">
+    <tui-island *ngIf="isShowRoomProperties | async" class="telemetry-info-island">
       <header (click)="onClickPortal()" class="telemetry-info-island-header">
         <p class="tui-island__category">Помещение</p>
-        <h3 class="tui-island__title">{{ info.roomName }}</h3>
+        <h3 class="tui-island__title">{{ selectedRoomName | async }}</h3>
       </header>
 
-      <div class="telemetry-info-island-content">
-        <div class="tui-island__paragraph">
-          <ul class="telemetry-list">
-            <li>
-              <span class="key">Площадь</span>
-              <span class="value">{{ info.properties.get("area") }}</span>
-            </li>
-            <li>
-              <span class="key">Расходы</span>
-              <span class="value">{{ info.properties.get("expenses") }}</span>
-            </li>
+      <tui-loader *ngIf="selectedRoomTelemetryInfoIsLoading | async" />
 
-            <li>
-              <span class="key">Присутствие</span>
-              <span class="value">{{ info.properties.get("move") }}</span>
-            </li>
-          </ul>
-        </div>
+      <div class="telemetry-info-island-content" *ngIf="selectedRoomTelemetryInfo | async as info">
+        <ng-container *ngIf="!(selectedRoomTelemetryInfoIsLoading | async)">
+          <div class="tui-island__paragraph">
+            <ul class="telemetry-list">
+              <li>
+                <span class="key">Площадь</span>
+                <span class="value">{{ info.get("area") }}</span>
+              </li>
+              <li>
+                <span class="key">Расходы</span>
+                <span class="value">{{ info.get("expenses") }}</span>
+              </li>
 
-        <div class="tui-island__paragraph">
-          <h4 style="margin: 0;">Температура</h4>
+              <li>
+                <span class="key">Присутствие</span>
+                <span class="value">{{ info.get("move") }}</span>
+              </li>
+            </ul>
+          </div>
 
-          <ul class="telemetry-list" style="padding-left: 1rem">
-            <li>
-              <span class="key">Норма</span>
-              <span class="value">{{ info.properties.get("requiredTemp") }}</span>
-            </li>
-            <li>
-              <span class="key">Текущая</span>
-              <span class="value">{{ info.properties.get("curTemp") }}</span>
-            </li>
+          <div class="tui-island__paragraph">
+            <h4 style="margin: 0;">Температура</h4>
 
-            <li>
-              <span class="key">Средняя</span>
-              <span class="value">{{ info.properties.get("averageCurTemp") }}</span>
-            </li>
-          </ul>
-        </div>
+            <ul class="telemetry-list" style="padding-left: 1rem">
+              <li>
+                <span class="key">Норма</span>
+                <span class="value">{{ info.get("requiredTemp") }}</span>
+              </li>
+              <li>
+                <span class="key">Текущая</span>
+                <span class="value">{{ info.get("curTemp") }}</span>
+              </li>
 
-        <div class="tui-island__paragraph">
-          <h4 style="margin: 0;">Электропотребление</h4>
+              <li>
+                <span class="key">Средняя</span>
+                <span class="value">{{ info.get("averageCurTemp") }}</span>
+              </li>
+            </ul>
+          </div>
 
-          <ul class="telemetry-list" style="padding-left: 1rem">
-            <li>
-              <span class="key">Норма</span>
-              <span class="value">{{ info.properties.get("allowablePowerConsumption") }}</span>
-            </li>
-            <li>
-              <span class="key">Текущая</span>
-              <span class="value">{{ info.properties.get("curDayPowerConsumption") }}</span>
-            </li>
+          <div class="tui-island__paragraph">
+            <h4 style="margin: 0;">Электропотребление</h4>
 
-            <li>
-              <span class="key">Средняя</span>
-              <span class="value">{{ info.properties.get("averagePowerConsumption") }}</span>
-            </li>
-          </ul>
-        </div>
+            <ul class="telemetry-list" style="padding-left: 1rem">
+              <li>
+                <span class="key">Норма</span>
+                <span class="value">{{ info.get("allowablePowerConsumption") }}</span>
+              </li>
+              <li>
+                <span class="key">Текущая</span>
+                <span class="value">{{ info.get("curDayPowerConsumption") }}</span>
+              </li>
 
-        <div class="tui-island__paragraph">
-          <h4 style="margin: 0;">Потребрение воды</h4>
+              <li>
+                <span class="key">Средняя</span>
+                <span class="value">{{ info.get("averagePowerConsumption") }}</span>
+              </li>
+            </ul>
+          </div>
 
-          <ul class="telemetry-list" style="padding-left: 1rem">
-            <li>
-              <span class="key">Текущая</span>
-              <span class="value">{{ info.properties.get("curDayWaterConsumption") }}</span>
-            </li>
+          <div class="tui-island__paragraph">
+            <h4 style="margin: 0;">Потребрение воды</h4>
 
-            <li>
-              <span class="key">Средняя</span>
-              <span class="value">{{ info.properties.get("averageWaterConsumption") }}</span>
-            </li>
-          </ul>
-        </div>
+            <ul class="telemetry-list" style="padding-left: 1rem">
+              <li>
+                <span class="key">Текущая</span>
+                <span class="value">{{ info.get("curDayWaterConsumption") }}</span>
+              </li>
 
-        <p>* Среднее за месяц</p>
+              <li>
+                <span class="key">Средняя</span>
+                <span class="value">{{ info.get("averageWaterConsumption") }}</span>
+              </li>
+            </ul>
+          </div>
+
+          <p>* Среднее за месяц</p>
+        </ng-container>
       </div>
     </tui-island>
 
-    <tui-island class="telemetry-info-island" *ngIf="selectedStoreyTelemetryInfo | async as info">
+    <tui-island class="telemetry-info-island" *ngIf="isShowStoreyProperties | async">
       <header (click)="onClickPortal()" class="telemetry-info-island-header">
         <p class="tui-island__category">Этаж</p>
-        <h3 class="tui-island__title">{{ info.name }}</h3>
+        <h3 class="tui-island__title">{{ selectedStoreyName | async }}</h3>
       </header>
 
-      <div class="telemetry-info-island-content">
-        <div class="tui-island__paragraph">
-          <ul class="telemetry-list">
-            <li>
-              <span class="key">Площадь</span>
-              <span class="value">{{ info.properties.get("area") }}</span>
-            </li>
+      <tui-loader *ngIf="selectedStoreyInfoIsLoading | async" />
 
-            <li>
-              <span class="key">Расходы</span>
-              <span class="value">{{ info.properties.get("expenses") }}</span>
-            </li>
-          </ul>
-        </div>
+      <div class="telemetry-info-island-content" *ngIf="selectedStoreyTelemetryInfo | async as info">
+        <ng-container *ngIf="!(selectedStoreyInfoIsLoading | async)">
+          <div class="tui-island__paragraph">
+            <ul class="telemetry-list">
+              <li>
+                <span class="key">Площадь</span>
+                <span class="value">{{ info.properties.get("area") }}</span>
+              </li>
 
-        <div class="tui-island__paragraph">
-          <h4 style="margin: 0;">Температура</h4>
+              <li>
+                <span class="key">Расходы</span>
+                <span class="value">{{ info.properties.get("expenses") }}</span>
+              </li>
+            </ul>
+          </div>
 
-          <ul class="telemetry-list" style="padding-left: 1rem">
-            <li>
-              <span class="key">Норма</span>
-              <span class="value">{{ info.properties.get("requiredTemp") }}</span>
-            </li>
-            <li>
-              <span class="key">Текущая</span>
-              <span class="value">{{ info.properties.get("curTemp") }}</span>
-            </li>
+          <div class="tui-island__paragraph">
+            <h4 style="margin: 0;">Температура</h4>
 
-            <li>
-              <span class="key">Средняя</span>
-              <span class="value">{{ info.properties.get("averageCurTemp") }}</span>
-            </li>
-          </ul>
-        </div>
+            <ul class="telemetry-list" style="padding-left: 1rem">
+              <li>
+                <span class="key">Норма</span>
+                <span class="value">{{ info.properties.get("requiredTemp") }}</span>
+              </li>
+              <li>
+                <span class="key">Текущая</span>
+                <span class="value">{{ info.properties.get("curTemp") }}</span>
+              </li>
 
-        <div class="tui-island__paragraph">
-          <h4 style="margin: 0;">Электропотребление</h4>
+              <li>
+                <span class="key">Средняя</span>
+                <span class="value">{{ info.properties.get("averageCurTemp") }}</span>
+              </li>
+            </ul>
+          </div>
 
-          <ul class="telemetry-list" style="padding-left: 1rem">
-            <li>
-              <span class="key">Норма</span>
-              <span class="value">{{ info.properties.get("allowablePowerConsumption") }}</span>
-            </li>
-            <li>
-              <span class="key">Текущая</span>
-              <span class="value">{{ info.properties.get("curDayPowerConsumption") }}</span>
-            </li>
+          <div class="tui-island__paragraph">
+            <h4 style="margin: 0;">Электропотребление</h4>
 
-            <li>
-              <span class="key">Средняя</span>
-              <span class="value">{{ info.properties.get("averagePowerConsumption") }}</span>
-            </li>
-          </ul>
-        </div>
+            <ul class="telemetry-list" style="padding-left: 1rem">
+              <li>
+                <span class="key">Норма</span>
+                <span class="value">{{ info.properties.get("allowablePowerConsumption") }}</span>
+              </li>
+              <li>
+                <span class="key">Текущая</span>
+                <span class="value">{{ info.properties.get("curDayPowerConsumption") }}</span>
+              </li>
 
-        <div class="tui-island__paragraph">
-          <h4 style="margin: 0;">Потребрение воды</h4>
+              <li>
+                <span class="key">Средняя</span>
+                <span class="value">{{ info.properties.get("averagePowerConsumption") }}</span>
+              </li>
+            </ul>
+          </div>
 
-          <ul class="telemetry-list" style="padding-left: 1rem">
-            <li>
-              <span class="key">Текущая</span>
-              <span class="value">{{ info.properties.get("curDayWaterConsumption") }}</span>
-            </li>
+          <div class="tui-island__paragraph">
+            <h4 style="margin: 0;">Потребрение воды</h4>
 
-            <li>
-              <span class="key">Средняя</span>
-              <span class="value">{{ info.properties.get("averageWaterConsumption") }}</span>
-            </li>
-          </ul>
-        </div>
+            <ul class="telemetry-list" style="padding-left: 1rem">
+              <li>
+                <span class="key">Текущая</span>
+                <span class="value">{{ info.properties.get("curDayWaterConsumption") }}</span>
+              </li>
 
-        <p>* Среднее за месяц</p>
+              <li>
+                <span class="key">Средняя</span>
+                <span class="value">{{ info.properties.get("averageWaterConsumption") }}</span>
+              </li>
+            </ul>
+          </div>
+
+          <p>* Среднее за месяц</p>
+        </ng-container>
       </div>
     </tui-island>
   </tui-scrollbar>
