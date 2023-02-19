@@ -1,0 +1,8 @@
+:host {
+    display: block;
+}
+
+.leak-title-container {
+    display: flex;
+    align-items: center;
+}

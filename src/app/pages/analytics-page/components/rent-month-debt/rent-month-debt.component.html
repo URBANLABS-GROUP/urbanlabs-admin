@@ -1,0 +1,24 @@
+<tui-island *ngIf="value.length > 0">
+  <p class="tui-island__category">аренда</p>
+  <h3 class="tui-island__title">Оплата за месяц</h3>
+  <tui-pie-chart
+      class="pie-chart"
+      [value]="value"
+      [tuiHintContent]="content"
+  ></tui-pie-chart>
+  <div class="pie-legends">
+    <span>Оплачено</span>
+    <span>Задолженность</span>
+  </div>
+</tui-island>
+
+<ng-template
+    #content
+    let-index
+>
+  <tui-money
+      [singleColor]="true"
+      [value]="value[index]"
+  ></tui-money>
+  <div>{{ labels[ index ] }}</div>
+</ng-template>

@@ -1,0 +1,20 @@
+<tui-island *ngIf="value.length > 0">
+  <p class="tui-island__category">аренда</p>
+  <h3 class="tui-island__title">Оплата за период</h3>
+
+  <tui-axes
+      class="axes"
+      [axisXLabels]="labelsX"
+      [axisYLabels]="labelsY"
+  >
+    <tui-bar-chart
+        [max]="max"
+        [value]="value"
+        [tuiHintContent]="hint"
+    ></tui-bar-chart>
+  </tui-axes>
+  <div class="chart-legends">
+    <span>Оплачено</span>
+    <span>Задолженность</span>
+  </div>
+</tui-island>

@@ -1,0 +1,32 @@
+<tui-accordion class="container" *ngIf="leaks !== null && leaks.length > 0">
+  <tui-accordion-item *ngFor="let leak of currentLeaks">
+    <div class="leak-title-container">
+      <tui-marker-icon
+          new
+          mode="error"
+          size="xxs"
+          src="tuiIconBellLarge"
+          class="tui-space_right-2"
+      ></tui-marker-icon>
+      <span>
+        {{ leakTitleMap[ leak.alertType ] }}
+      </span>
+    </div>
+    <ng-template tuiAccordionItemContent>
+      {{ leakDescriptionMap[ leak.alertType ] }}
+
+      <span *ngIf="leak.alertType === leakType.tooHotTemp">
+        Текущая температура {{ leak.currentTemp ? leak.currentTemp / 10 : '' }} С в помещении №{{ leak.roomId }}.
+      </span>
+
+      <span *ngIf="leak.alertType === leakType.negativeProfit">
+        Ушли в минус на {{ leak.expense ? (leak.expense | tuiFormatNumber) : '' }} ₽ в помещении №{{ leak.roomId }}.
+      </span>
+
+      <span *ngIf="leak.alertType === leakType.tooMuchPowerConsuming">
+        Текущее потребление электроэнергии {{ leak.currentPowerConsumption }} Вт в помещении №{{ leak.roomId }}.
+      </span>
+
+    </ng-template>
+  </tui-accordion-item>
+</tui-accordion>

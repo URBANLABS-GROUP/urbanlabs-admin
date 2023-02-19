@@ -1,3 +1,53 @@
 <tui-root>
-  <router-outlet></router-outlet>
+  <header class="header">
+    <div class="logo-container">
+      <a routerLink="/">
+        <img src="/assets/logo.svg" alt="Urban Labs logo">
+      </a>
+    </div>
+
+    <nav class="navigation-container">
+      <ul class="navigation-list">
+        <li><a class="desktop-link" tuiLink routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">Мониторинг</a></li>
+        <li><a class="desktop-link" tuiLink routerLink="/analytics" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">Аналитика</a></li>
+        <li><a class="desktop-link" tuiLink routerLink="/notification" routerLinkActive="is-active"
+               [routerLinkActiveOptions]="{ exact: true }">Уведомления</a></li>
+      </ul>
+    </nav>
+
+    <div class="user-container">
+      <a tuiIconButton
+         appearance="icon"
+         class="mobile-link"
+         [icon]="'tuiIconHomeLarge'"
+         routerLink="/"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: true }"></a>
+
+      <a tuiIconButton
+         appearance="icon"
+         class="mobile-link"
+         [icon]="'tuiIconPieChartLarge'"
+         routerLink="/analytics"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: true }"></a>
+
+      <a tuiIconButton
+         appearance="icon"
+         class="mobile-link"
+         [icon]="'tuiIconBellLarge'"
+         routerLink="/notification"
+         routerLinkActive="is-active"
+         [routerLinkActiveOptions]="{ exact: true }"></a>
+
+      <a tuiIconButton
+         class="user-icon"
+         appearance="icon"
+         [icon]="'tuiIconUser'"></a>
+    </div>
+  </header>
+
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
 </tui-root>

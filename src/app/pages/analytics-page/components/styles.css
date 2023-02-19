@@ -1,0 +1,46 @@
+.axes {
+    height: 14rem;
+    width: 100%;
+    margin: 2rem auto;
+
+    --tui-chart-0: skyblue;
+    --tui-chart-1: violet;
+}
+
+.pie-chart {
+    margin: 2rem auto;
+}
+
+.flex {
+    display: flex;
+}
+
+.pie-legends {
+    display: flex;
+    justify-content: space-between;
+
+    font-weight: bold;
+}
+
+.pie-legends span:first-child {
+    color: var(--tui-chart-0);
+}
+
+.pie-legends span:last-child {
+    color: var(--tui-chart-1);
+}
+
+.chart-legends {
+    display: flex;
+    justify-content: space-between;
+
+    font-weight: bold;
+}
+
+.chart-legends span:first-child {
+    color: skyblue;
+}
+
+.chart-legends span:last-child {
+    color: violet;
+}

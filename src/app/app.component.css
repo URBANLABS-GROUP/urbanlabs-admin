@@ -1,0 +1,72 @@
+.header {
+  display: grid;
+  grid-template-columns: 50px 1fr 50px;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 0.7rem;
+  box-shadow: 0 0.125rem 1rem rgb(0 0 0 / 8%);
+  border-bottom: 1px solid var(--tui-base-03);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  background-color: white;
+  height: 60px;
+}
+
+.content {
+  padding-top: 60px;
+}
+
+.navigation-list {
+  display: flex;
+  gap: 1rem;
+}
+
+.navigation-container {
+  display: flex;
+  align-items: center;
+}
+
+.desktop-link.is-active {
+  border-bottom: 1px solid currentColor;
+}
+
+:host ::ng-deep .mobile-link.is-active .t-icon svg {
+  color: var(--tui-primary) !important;
+}
+
+.user-container .mobile-link {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .header {
+    top: unset;
+    bottom: 0;
+    grid-template-columns: unset;
+    border-top: 1px solid var(--tui-base-03);
+    margin: -16px;
+    padding: 16px;
+  }
+
+  .logo-container,
+  .navigation-container {
+    display: none;
+  }
+
+  .content {
+    padding-top: unset;
+    padding-bottom: 60px;
+  }
+
+  .user-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .user-container .mobile-link {
+    display: block;
+  }
+}

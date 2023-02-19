@@ -1,3 +1,112 @@
 :host {
   display: block;
 }
+
+:host ::ng-deep tui-tree-item-content:hover {
+  cursor: pointer;
+  background-color: rgba(204, 204, 204, 0.51);
+  border-radius: 5px;
+}
+
+:host ::ng-deep .urb-tree-node {
+  display: block;
+  width: 100%;
+}
+
+:host ::ng-deep .urb-tree-node.is-selected {
+  font-weight: bold;
+}
+
+.tree-island {
+  position: fixed;
+  margin: 75px 10px 10px;
+  top: 0;
+  right: 0;
+  z-index: 9999;
+  width: 260px;
+  height: calc(100% - 1rem - 75px);
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: 30px 1fr;
+  gap: 10px;
+}
+
+.tree-island-content {
+  overflow-y: auto;
+}
+
+.leaflet-map {
+  margin-top: 61px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.portal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9999;
+  width: 260px;
+  margin: 75px 280px 10px 10px;
+  height: calc(100% - 1rem - 75px);
+}
+
+.telemetry-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 16px;
+  margin: 0 -16px;
+}
+.telemetry-list li .value {
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+.telemetry-info-island-content {
+  line-height: 1.1;
+}
+
+.tui-island__paragraph {
+  margin-bottom: 1rem;
+}
+
+@media screen and (max-width: 47.9625em) {
+  .leaflet-map {
+    margin-top: 0;
+  }
+
+  .tree-island {
+    width: 100%;
+    bottom: 0;
+    margin: 0;
+    top: unset;
+    height: 100%;
+    z-index: 9999;
+    transform: translateY(80%);
+  }
+
+  .tree-island.is-open {
+    transform: translateY(0);
+  }
+
+  .portal {
+    width: 100%;
+    bottom: 0;
+    margin: 0;
+    top: unset;
+    height: 100%;
+    z-index: 9999;
+    transform: translateY(69%);
+  }
+
+  .portal.is-open {
+    transform: translateY(0);
+  }
+
+  .telemetry-info-island {
+    height: 540px;
+  }
+}

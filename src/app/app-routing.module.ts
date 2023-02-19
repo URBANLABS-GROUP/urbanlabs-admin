@@ -1,16 +1,22 @@
 import { NgModule } from "@angular/core"
 import { RouterModule, Routes } from "@angular/router"
-import { AnalyticsPageComponent } from "./pages/analytics-page/analytics-page.component"
 import { HomePageComponent } from "./pages/home-page/home-page.component"
 
 const routes: Routes = [
   {
     path: "",
-    component: HomePageComponent
+    component: HomePageComponent,
+    title: "Мониторинг"
   },
   {
     path: "analytics",
-    component: AnalyticsPageComponent
+    loadChildren: () => import('./pages/analytics-page/analytics.module').then((module) => module.AnalyticsModule),
+    title: "Аналитика"
+  },
+  {
+    path: "notification",
+    loadChildren: () => import('./pages/notification/notification.module').then((module) => module.NotificationModule),
+    title: "Уведомления"
   }
 ]
 

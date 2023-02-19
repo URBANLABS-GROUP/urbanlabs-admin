@@ -1,0 +1,60 @@
+:host {
+    display: block;
+}
+
+.axes {
+    height: 12.5rem;
+    width: 100%;
+    margin: 2rem auto;
+}
+
+.rooms {
+    display: flex;
+    gap: 4px;
+
+    font-weight: bold;
+}
+
+.chart {
+    position: absolute;
+    color: #ffb74c;
+}
+
+.legend {
+    color: #ffb74c;
+}
+
+.chart:nth-child(2),
+.legend:nth-child(2) {
+    color: #bc71c9;
+}
+
+.chart:nth-child(3),
+.legend:nth-child(3) {
+    color: #4dc3f7;
+}
+
+.chart:nth-child(4),
+.legend:nth-child(4) {
+    color: #c44df7;
+}
+
+.chart:nth-child(5),
+.legend:nth-child(5) {
+    color: #f74d75;
+}
+
+.chart:nth-child(6),
+.legend:nth-child(6) {
+    color: #cdf74d;
+}
+
+.chart:nth-child(7),
+.legend:nth-child(7) {
+    color: #f74d5b;
+}
+
+.chart:nth-child(8),
+.legend:nth-child(8) {
+    color: #299184;
+}

@@ -1,1 +1,23 @@
-<p>analytics-page works!</p>
+<urb-rent-month-debt
+    [debt]="rent | async"
+></urb-rent-month-debt>
+
+<urb-rent-month-count
+    [rent]="rent | async"
+></urb-rent-month-count>
+
+<urb-rent-period-count
+    [rents]="rents | async"
+></urb-rent-period-count>
+
+<urb-rent-period-debt
+    [rents]="rents | async"
+></urb-rent-period-debt>
+
+<urb-temp-chart
+    [points]="tempPoints | async"
+></urb-temp-chart>
+
+<urb-power-chart
+    [points]="powerPoints | async"
+></urb-power-chart>
