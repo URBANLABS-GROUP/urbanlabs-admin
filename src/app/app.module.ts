@@ -1,8 +1,9 @@
 import { HttpClientModule } from "@angular/common/http"
-import { NgModule } from "@angular/core"
+import { Injectable, NgModule } from "@angular/core"
 import { ReactiveFormsModule } from "@angular/forms"
-import { BrowserModule } from "@angular/platform-browser"
+import { BrowserModule, Title } from "@angular/platform-browser"
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations"
+import { RouterStateSnapshot, TitleStrategy } from "@angular/router"
 import {
   TUI_SANITIZER,
   TuiAlertModule,
@@ -24,6 +25,23 @@ import { ConfigService } from "./global/services/config/config.service"
 import { AnalyticsModule } from "./pages/analytics-page/analytics.module"
 import { InteractiveMapComponent } from "./pages/home-page/components/interactive-map/interactive-map.component"
 import { HomePageComponent } from "./pages/home-page/home-page.component"
+
+@Injectable()
+export class UrbTitleStrategy extends TitleStrategy {
+  constructor(private title: Title) {
+    super()
+  }
+
+  public override updateTitle(snapshot: RouterStateSnapshot): void {
+    const title: string | undefined = this.buildTitle(snapshot)
+
+    if (title === null || typeof title === "undefined") {
+      return
+    }
+
+    this.title.setTitle(`${ title } – UrbanLabs Admin`)
+  }
+}
 
 @NgModule({
   declarations: [
@@ -53,7 +71,14 @@ import { HomePageComponent } from "./pages/home-page/home-page.component"
     TuiButtonModule,
     TuiLoaderModule
   ],
-  providers: [ { provide: TUI_SANITIZER, useClass: NgDompurifySanitizer }, ConfigService ],
+  providers: [
+    { provide: TUI_SANITIZER, useClass: NgDompurifySanitizer },
+    ConfigService,
+    {
+      provide: TitleStrategy,
+      useClass: UrbTitleStrategy
+    }
+  ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule {

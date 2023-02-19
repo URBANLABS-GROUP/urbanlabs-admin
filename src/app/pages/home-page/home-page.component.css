@@ -99,7 +99,7 @@
     top: unset;
     height: 100%;
     z-index: 9999;
-    transform: translateY(72%);
+    transform: translateY(69%);
   }
 
   .portal.is-open {

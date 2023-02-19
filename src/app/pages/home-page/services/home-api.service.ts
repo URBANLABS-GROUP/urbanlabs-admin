@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import { Observable } from "rxjs"
 import { ConfigService } from "../../../global/services/config/config.service"
-import { BusinessCenter, RoomTelemetryInfo } from "../models"
+import { BusinessCenter, RoomTelemetryInfo, StoreyTelemetryInfo } from "../models"
 
 @Injectable({
   providedIn: "root"
@@ -18,5 +18,9 @@ export class HomeApiService {
 
   public getRoomTelemetryInfo(id: number): Observable<RoomTelemetryInfo> {
     return this.httpClient.get<RoomTelemetryInfo>(`${ this.configService.baseApiUrl }/room/info/${ id }`)
+  }
+
+  public getStoreyTelemetryInfo(id: number): Observable<StoreyTelemetryInfo> {
+    return this.httpClient.get<StoreyTelemetryInfo>(`${ this.configService.baseApiUrl }/business-center-storey/info/${ id }`)
   }
 }

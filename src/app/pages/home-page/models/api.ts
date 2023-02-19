@@ -4,6 +4,9 @@ export type Room = {
   position: string
   name: string
   leaseContractId: string
+  requiredTemp: number
+  allowablePowerConsumption: number
+  area: number
 }
 
 export type BusinessCenterStorey = {
@@ -20,6 +23,7 @@ export type BusinessCenter = {
   name: string
   lessorId: number
   storeys: readonly BusinessCenterStorey[]
+  wattPrice: number
 }
 
 export type RoomTelemetryInfo = {
@@ -32,6 +36,18 @@ export type RoomTelemetryInfo = {
   rent: number | null
   expenses: number | null
   move: boolean | null
+}
+
+export type StoreyTelemetryInfo = {
+  curTemp: number | null
+  averageCurTemp: number | null
+  curDayPowerConsumption: number | null
+  averagePowerConsumption: number | null
+  curDayWaterConsumption: number | null
+  averageWaterConsumption: number | null
+  rent: number | null
+  expenses: number | null
+  area: number | null
 }
 
 export type BusinessCenterStoreyMap = {

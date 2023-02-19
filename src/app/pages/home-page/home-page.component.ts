@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { BoundsLiteral, CRS, LayerGroup, MapOptions, Polygon, SVGOverlay } from "leaflet"
 import { BehaviorSubject, catchError, firstValueFrom, map, Observable, of, shareReplay, switchMap, take, tap, timer, withLatestFrom } from "rxjs"
-import { BusinessCenter, BusinessCenterStorey, BusinessCenterStoreyMap, LeafletMap, Room, RoomTelemetryInfo } from "./models"
+import { BusinessCenter, BusinessCenterStorey, BusinessCenterStoreyMap, LeafletMap, Room, RoomTelemetryInfo, StoreyTelemetryInfo } from "./models"
 import { HomeApiService } from "./services/home-api.service"
 
 type UrbBusinessCenterTreeNode = {
@@ -10,6 +10,7 @@ type UrbBusinessCenterTreeNode = {
   name: string
   isSelected: Observable<boolean>
   children: UrbStoreyTreeNode[]
+  original: BusinessCenter
 }
 
 type UrbStoreyTreeNode = {
@@ -19,6 +20,7 @@ type UrbStoreyTreeNode = {
   name: string
   isSelected: Observable<boolean>
   children: UrbRoomTreeNode[]
+  origin: BusinessCenterStorey
 }
 
 type UrbRoomTreeNode = {
@@ -29,6 +31,7 @@ type UrbRoomTreeNode = {
   name: string
   isSelected: Observable<boolean>
   children: never[]
+  origin: Room
 }
 
 type UrbTreeNode = UrbBusinessCenterTreeNode | UrbStoreyTreeNode | UrbRoomTreeNode
@@ -246,6 +249,7 @@ export class HomePageComponent {
           type: "CENTER",
           name: center.name,
           isSelected: createIsSelected("CENTER", center.id),
+          original: center,
           children: center.storeys.map((storey) => {
             return {
               id: storey.id,
@@ -253,6 +257,7 @@ export class HomePageComponent {
               name: storey.name,
               isSelected: createIsSelected("STOREY", storey.id),
               parentBusinessCenterId: center.id,
+              origin: storey,
               children: storey.rooms.map((room) => {
                 return {
                   id: room.id,
@@ -261,6 +266,7 @@ export class HomePageComponent {
                   isSelected: createIsSelected("ROOM", room.id),
                   parentBusinessCenterId: center.id,
                   parentStoreyId: storey.id,
+                  origin: room,
                   children: []
                 }
               })
@@ -280,9 +286,13 @@ export class HomePageComponent {
         return of(null)
       }
 
-      const [ , id ] = symbol.split(":")
+      const [ type, id ] = symbol.split(":") as [ UrbTreeNode["type"], string ]
 
-      const treeNode: UrbTreeNode | null = searchTreeNodeSeveral(symbol, businessCenterTrees)
+      if (type === "CENTER" || type === "STOREY") {
+        return of(null)
+      }
+
+      const treeNode: UrbRoomTreeNode | null = searchTreeNodeSeveral(symbol, businessCenterTrees) as UrbRoomTreeNode | null
 
       if (treeNode === null) {
         throw new Error(`TreeNode with symbol="${ symbol }" not found`)
@@ -292,6 +302,93 @@ export class HomePageComponent {
         switchMap(() => this.homeApiService.getRoomTelemetryInfo(parseFloat(id)).pipe(
           map((telemetryInfo: RoomTelemetryInfo) => {
             const result: Map<string, string> = new Map()
+
+            result.set("rent", telemetryInfo.rent === null
+              ? "Не известно"
+              : telemetryInfo.rent.toLocaleString("ru-RU") + " ₽")
+
+            result.set("area", treeNode.origin.area === null
+              ? "Не известно"
+              : treeNode.origin.area.toLocaleString("ru-RU") + " м2")
+
+            result.set("requiredTemp", treeNode.origin.requiredTemp === null
+              ? "Не известно"
+              : (treeNode.origin.requiredTemp / 10).toLocaleString("ru-RU") + " °С")
+
+            result.set("curTemp", telemetryInfo.curTemp === null
+              ? "Не известно"
+              : (telemetryInfo.curTemp / 10).toLocaleString("ru-RU") + " °С")
+
+            result.set("averageCurTemp", telemetryInfo.averageCurTemp === null
+              ? "Не известно"
+              : (telemetryInfo.averageCurTemp / 10).toLocaleString("ru-RU") + " °С")
+
+            result.set("allowablePowerConsumption", treeNode.origin.allowablePowerConsumption === null
+              ? "Не известно"
+              : treeNode.origin.allowablePowerConsumption.toLocaleString("ru-RU") + " кВт*ч")
+
+            result.set("curDayPowerConsumption", telemetryInfo.curDayPowerConsumption === null
+              ? "Не известно"
+              : telemetryInfo.curDayPowerConsumption.toLocaleString("ru-RU") + " кВт*ч")
+
+            result.set("averagePowerConsumption", telemetryInfo.averagePowerConsumption === null
+              ? "Не известно"
+              : telemetryInfo.averagePowerConsumption.toLocaleString("ru-RU") + " кВт*ч")
+
+            result.set("curDayWaterConsumption", telemetryInfo.curDayWaterConsumption === null
+              ? "Не известно"
+              : telemetryInfo.curDayWaterConsumption.toLocaleString("ru-RU") + " м3")
+
+            result.set("averageWaterConsumption", telemetryInfo.averageWaterConsumption === null
+              ? "Не известно"
+              : telemetryInfo.averageWaterConsumption.toLocaleString("ru-RU") + " м3")
+
+            result.set("expenses", telemetryInfo.expenses === null
+              ? "Не известно"
+              : telemetryInfo.expenses.toLocaleString("ru-RU") + " ₽")
+
+            result.set("move", telemetryInfo.move === null
+              ? "Не известно"
+              : telemetryInfo.move ? "Да" : "Нет")
+
+            return {
+              roomName: treeNode.name,
+              properties: result
+            }
+          }),
+          catchError(() => of(null))
+        ))
+      )
+    })
+  )
+
+  protected selectedStoreyTelemetryInfo: Observable<{ name: string, properties: Map<string, string> } | null> = this.selectedTreeNode.pipe(
+    withLatestFrom(this.businessCenterTrees),
+    switchMap(([ symbol, businessCenterTrees ]: [ UrbTreeNodeSymbol | null, UrbTreeNode[] ]) => {
+      if (symbol === null) {
+        return of(null)
+      }
+
+      const [ type, id ] = symbol.split(":") as [ UrbTreeNode["type"], string ]
+
+      if (type === "CENTER" || type === "ROOM") {
+        return of(null)
+      }
+
+      const treeNode: UrbStoreyTreeNode | null = searchTreeNodeSeveral(symbol, businessCenterTrees) as UrbStoreyTreeNode | null
+
+      if (treeNode === null) {
+        throw new Error(`TreeNode with symbol="${ symbol }" not found`)
+      }
+
+      return timer(0, 15_000).pipe(
+        switchMap(() => this.homeApiService.getStoreyTelemetryInfo(parseFloat(id)).pipe(
+          map((telemetryInfo: StoreyTelemetryInfo) => {
+            const result: Map<string, string> = new Map()
+
+            result.set("area", telemetryInfo.area === null
+              ? "Не известно"
+              : telemetryInfo.area.toLocaleString("ru-RU") + " м2")
 
             result.set("rent", telemetryInfo.rent === null
               ? "Не известно"
@@ -325,12 +422,8 @@ export class HomePageComponent {
               ? "Не известно"
               : telemetryInfo.expenses.toLocaleString("ru-RU") + " ₽")
 
-            result.set("move", telemetryInfo.move === null
-              ? "Не известно"
-              : telemetryInfo.move ? "Да" : "Нет")
-
             return {
-              roomName: treeNode.name,
+              name: treeNode.name,
               properties: result
             }
           }),
@@ -407,6 +500,7 @@ export class HomePageComponent {
                 const storeyController = businessCenter.get(result.id)
                 businessCenter.forEach((storeyController) => storeyController.hide())
 
+                storeyController?.unselectAllRooms()
                 storeyController?.show(leafletMap)
               }
 
