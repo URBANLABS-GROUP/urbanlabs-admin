@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { BoundsLiteral, CRS, LayerGroup, MapOptions, Polygon, SVGOverlay } from "leaflet"
 import { BehaviorSubject, catchError, firstValueFrom, map, Observable, of, shareReplay, switchMap, take, tap, timer, withLatestFrom } from "rxjs"
-import { BusinessCenter, BusinessCenterStorey, BusinessCenterStoreyMap, LeafletMap, Room, RoomTelemetryInfo } from "./models"
+import { BusinessCenter, BusinessCenterStorey, BusinessCenterStoreyMap, LeafletMap, Room, RoomTelemetryInfo, StoreyTelemetryInfo } from "./models"
 import { HomeApiService } from "./services/home-api.service"
 
 type UrbBusinessCenterTreeNode = {
@@ -362,7 +362,7 @@ export class HomePageComponent {
     })
   )
 
-  /*protected selectedStoreyTelemetryInfo: Observable<{ name: string, properties: Map<string, string> } | null> = this.selectedTreeNode.pipe(
+  protected selectedStoreyTelemetryInfo: Observable<{ name: string, properties: Map<string, string> } | null> = this.selectedTreeNode.pipe(
     withLatestFrom(this.businessCenterTrees),
     switchMap(([ symbol, businessCenterTrees ]: [ UrbTreeNodeSymbol | null, UrbTreeNode[] ]) => {
       if (symbol === null) {
@@ -375,19 +375,59 @@ export class HomePageComponent {
         return of(null)
       }
 
-      const treeNode: UrbTreeNode | null = searchTreeNodeSeveral(symbol, businessCenterTrees)
+      const treeNode: UrbStoreyTreeNode | null = searchTreeNodeSeveral(symbol, businessCenterTrees) as UrbStoreyTreeNode | null
 
       if (treeNode === null) {
         throw new Error(`TreeNode with symbol="${ symbol }" not found`)
       }
 
       return timer(0, 15_000).pipe(
-        switchMap(() => {
-          this.homeApiService
-        })
+        switchMap(() => this.homeApiService.getStoreyTelemetryInfo(parseFloat(id)).pipe(
+          map((telemetryInfo: StoreyTelemetryInfo) => {
+            const result: Map<string, string> = new Map()
+
+            result.set("rent", telemetryInfo.rent === null
+              ? "Не известно"
+              : telemetryInfo.rent.toLocaleString("ru-RU") + " ₽")
+
+            result.set("curTemp", telemetryInfo.curTemp === null
+              ? "Не известно"
+              : (telemetryInfo.curTemp / 10).toLocaleString("ru-RU") + " °С")
+
+            result.set("averageCurTemp", telemetryInfo.averageCurTemp === null
+              ? "Не известно"
+              : (telemetryInfo.averageCurTemp / 10).toLocaleString("ru-RU") + " °С")
+
+            result.set("curDayPowerConsumption", telemetryInfo.curDayPowerConsumption === null
+              ? "Не известно"
+              : telemetryInfo.curDayPowerConsumption.toLocaleString("ru-RU") + " кВт*ч")
+
+            result.set("averagePowerConsumption", telemetryInfo.averagePowerConsumption === null
+              ? "Не известно"
+              : telemetryInfo.averagePowerConsumption.toLocaleString("ru-RU") + " кВт*ч")
+
+            result.set("curDayWaterConsumption", telemetryInfo.curDayWaterConsumption === null
+              ? "Не известно"
+              : telemetryInfo.curDayWaterConsumption.toLocaleString("ru-RU") + " м3")
+
+            result.set("averageWaterConsumption", telemetryInfo.averageWaterConsumption === null
+              ? "Не известно"
+              : telemetryInfo.averageWaterConsumption.toLocaleString("ru-RU") + " м3")
+
+            result.set("expenses", telemetryInfo.expenses === null
+              ? "Не известно"
+              : telemetryInfo.expenses.toLocaleString("ru-RU") + " ₽")
+
+            return {
+              name: treeNode.name,
+              properties: result
+            }
+          }),
+          catchError(() => of(null))
+        ))
       )
     })
-  )*/
+  )
 
   constructor(private homeApiService: HomeApiService) {
     this.selectedRoomTelemetryInfo.subscribe(console.debug)

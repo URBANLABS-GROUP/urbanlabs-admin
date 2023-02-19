@@ -38,6 +38,17 @@ export type RoomTelemetryInfo = {
   move: boolean | null
 }
 
+export type StoreyTelemetryInfo = {
+  curTemp: number | null
+  averageCurTemp: number | null
+  curDayPowerConsumption: number | null
+  averagePowerConsumption: number | null
+  curDayWaterConsumption: number | null
+  averageWaterConsumption: number | null
+  rent: number | null
+  expenses: number | null
+}
+
 export type BusinessCenterStoreyMap = {
   svgContainer: {
     attributes: Record<string, string>
