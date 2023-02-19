@@ -29,11 +29,11 @@ export class PowerChartComponent implements OnChanges {
     const currentValue: PowerChart[] | null = changes[ 'points' ].currentValue
 
     if (currentValue !== null) {
-      this.values = currentValue.slice(0, 2).map((powerChart) => {
+      this.values = currentValue.slice(2, 4).map((powerChart) => {
         this.rooms.push(powerChart.name)
 
         return powerChart.points.map((point) => {
-          return [ new Date(point.x).getDate(), point.y ];
+          return [ new Date(point.x).getDate(), Math.floor(point.y / 10) ];
         });
       })
 

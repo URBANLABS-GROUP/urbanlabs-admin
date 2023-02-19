@@ -1,8 +1,7 @@
 :host {
     display: grid;
-    grid-template-columns: 1fr;
     gap: 1rem;
-    margin: 1rem;
+    padding: 1rem;
 }
 
 .widgets {
@@ -11,8 +10,15 @@
     gap: 1rem;
 }
 
+.charts {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
 @media (min-width: 1024px) {
-    :host {
+    .charts,
+    .widgets {
         grid-template-columns: 1fr 1fr;
     }
 }

@@ -3,8 +3,8 @@
     width: 100%;
     margin: 2rem auto;
 
-    --tui-chart-0: skyblue;
-    --tui-chart-1: violet;
+    --tui-chart-0: #4bc0c8;
+    --tui-chart-1: #ff5f6d;
 }
 
 .pie-chart {
@@ -38,9 +38,9 @@
 }
 
 .chart-legends span:first-child {
-    color: skyblue;
+    color: #4bc0c8;
 }
 
 .chart-legends span:last-child {
-    color: violet;
+    color: #ff5f6d;
 }

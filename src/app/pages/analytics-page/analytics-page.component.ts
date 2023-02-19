@@ -18,6 +18,6 @@ export class AnalyticsPageComponent {
     this.rent = this.analyticsService.loadMonthRent(1, '2023-02-01T00:00:00Z', '2023-03-01T00:00:00Z')
     this.rents = this.analyticsService.loadPeriodRents(1, '2022-06-01T00:00:00Z', '2023-03-01T00:00:00Z')
     this.tempPoints = this.analyticsService.loadTempChart(1, '2023-01-01T00:00:00Z', '2023-02-01T00:00:00Z')
-    this.powerPoints = this.analyticsService.loadPowerChart(1, '2023-01-01T00:00:00Z', '2023-02-01T00:00:00Z')
+    this.powerPoints = this.analyticsService.loadTempChart(1, '2023-01-01T00:00:00Z', '2023-02-01T00:00:00Z')
   }
 }
