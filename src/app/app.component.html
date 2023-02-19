@@ -8,8 +8,10 @@
 
     <nav class="navigation-container">
       <ul class="navigation-list">
-        <li><a class="desktop-link" tuiLink routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">Мониторинг</a></li>
-        <li><a class="desktop-link" tuiLink routerLink="/analytics" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">Аналитика</a></li>
+        <li><a class="desktop-link" tuiLink routerLink="/monitor" routerLinkActive="is-active"
+               [routerLinkActiveOptions]="{ exact: true }">Мониторинг</a></li>
+        <li><a class="desktop-link" tuiLink routerLink="/" routerLinkActive="is-active"
+               [routerLinkActiveOptions]="{ exact: true }">Аналитика</a></li>
         <li><a class="desktop-link" tuiLink routerLink="/notification" routerLinkActive="is-active"
                [routerLinkActiveOptions]="{ exact: true }">Уведомления</a></li>
       </ul>
@@ -20,7 +22,7 @@
          appearance="icon"
          class="mobile-link"
          [icon]="'tuiIconHomeLarge'"
-         routerLink="/"
+         routerLink="/monitor"
          routerLinkActive="is-active"
          [routerLinkActiveOptions]="{ exact: true }"></a>
 
@@ -28,7 +30,7 @@
          appearance="icon"
          class="mobile-link"
          [icon]="'tuiIconPieChartLarge'"
-         routerLink="/analytics"
+         routerLink="/"
          routerLinkActive="is-active"
          [routerLinkActiveOptions]="{ exact: true }"></a>
 

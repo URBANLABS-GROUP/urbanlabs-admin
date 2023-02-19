@@ -4,12 +4,12 @@ import { HomePageComponent } from "./pages/home-page/home-page.component"
 
 const routes: Routes = [
   {
-    path: "",
+    path: "monitor",
     component: HomePageComponent,
     title: "Мониторинг"
   },
   {
-    path: "analytics",
+    path: "",
     loadChildren: () => import('./pages/analytics-page/analytics.module').then((module) => module.AnalyticsModule),
     title: "Аналитика"
   },
