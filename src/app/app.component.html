@@ -8,10 +8,10 @@
 
     <nav class="navigation-container">
       <ul class="navigation-list">
-        <li><a class="desktop-link" tuiLink routerLink="/monitor" routerLinkActive="is-active"
-               [routerLinkActiveOptions]="{ exact: true }">Мониторинг</a></li>
         <li><a class="desktop-link" tuiLink routerLink="/" routerLinkActive="is-active"
                [routerLinkActiveOptions]="{ exact: true }">Аналитика</a></li>
+        <li><a class="desktop-link" tuiLink routerLink="/monitor" routerLinkActive="is-active"
+               [routerLinkActiveOptions]="{ exact: true }">Мониторинг</a></li>
         <li><a class="desktop-link" tuiLink routerLink="/notification" routerLinkActive="is-active"
                [routerLinkActiveOptions]="{ exact: true }">Уведомления</a></li>
       </ul>
@@ -21,16 +21,16 @@
       <a tuiIconButton
          appearance="icon"
          class="mobile-link"
-         [icon]="'tuiIconHomeLarge'"
-         routerLink="/monitor"
+         [icon]="'tuiIconPieChartLarge'"
+         routerLink="/"
          routerLinkActive="is-active"
          [routerLinkActiveOptions]="{ exact: true }"></a>
 
       <a tuiIconButton
          appearance="icon"
          class="mobile-link"
-         [icon]="'tuiIconPieChartLarge'"
-         routerLink="/"
+         [icon]="'tuiIconActivityLarge'"
+         routerLink="/monitor"
          routerLinkActive="is-active"
          [routerLinkActiveOptions]="{ exact: true }"></a>
 
