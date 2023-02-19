@@ -33,7 +33,7 @@ $ npm run start
 ## Сборка
 
 ```bash
-$ npm run build:prod
+$ npm run build
 ```
 
 Сборка docker образа:
